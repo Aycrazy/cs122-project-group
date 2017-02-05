@@ -29,11 +29,21 @@ def newspaper_usES(my_url):
     article.parse()
     return article.parse()
 
+def get_title(parse):
+    return parse.title
+    
 def get_authors(parse):
     return parse.authors
+    
+def get_keywords(parse):
+    parse.nlp()
+    return parse.kewords
 
 def get_text(parse):
     return parse.text
+    
+def get_pdate(parse):
+    return parse.publish_date
 
 def get_articles(main_url):
     jornada = newspaper.build(main_url)
