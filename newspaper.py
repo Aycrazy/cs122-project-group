@@ -15,8 +15,15 @@ import re
 main_url_usa = 'http://www.usatoday.com/'
 main_url_la = 'http://www.latimes.com/'
 
-def newspaper_use(my_url):
-    article = Article(my_url, language='es')
+def newspaper_usEN(my_url):
+    article = Article(my_url)
+    article.download()
+    article.html
+    article.parse()
+    return article.parse()
+
+def newspaper_usES(my_url):
+    article = Article(my_url, language = 'es')
     article.download()
     article.html
     article.parse()
