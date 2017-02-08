@@ -51,3 +51,11 @@ def get_articles(main_url):
         articles.append(article.url)
     return articles
 
+def get_sections(main_url):
+    paper = newspaper.build(main_url)
+    articles = []
+    for article in paper.categories:
+        articles.append(article.url)
+    return articles
+
+
