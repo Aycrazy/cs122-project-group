@@ -4,9 +4,9 @@ import bs4
 import urllib.parse
 import requests
 import re
-
-
-
+from io import StringIO
+import newspaper
+from newspaper import Article
 
 
 main_url = "http://www.jornada.unam.mx/ultimas"
@@ -64,3 +64,23 @@ def get_articles(sections_list):
 
     return articles
 
+def get_info(dictionary):
+    '''
+    '''
+    rv = {}
+    for key, item in dictionary.items():
+        count = 0
+        for i in item:
+            article = Article(i, language = 'es')
+            article.download()
+            article.parse()
+            count = count + 1
+            title = article.title
+            print(title, key, count)
+            date = article.publish_date
+            text = article.text
+            if key not in rv:
+                rv[key] = []
+            rv[key].append((title, date, text))
+
+    return rv
