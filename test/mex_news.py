@@ -11,9 +11,12 @@ from newspaper import Article
 
 main_url = "http://www.jornada.unam.mx/ultimas"
 
+#jornada tag_type = 'li'
+#jornada class_type = 'fixed-menu-p'
+#latimes tag_type = 'li'
+#latimes class_type = 'trb_nh_ln_li'
 
-
-def get_sections(main_url):
+def get_sections(main_url, tag_type, class_type):
     '''
     Find all the sections in the newspaper
     Inputs: main url 
@@ -23,18 +26,25 @@ def get_sections(main_url):
     html = pm.urlopen(url= main_url, method="GET").data
     soup = bs4.BeautifulSoup(html,'lxml')
 
-    tag_list = soup.find_all('li', class_="fixed-menu-p")
+    tag_list = soup.find_all(tag_, class_= class_type)
 
     rel_links_menu = []
     for t in tag_list: 
         pattern = r'(?<=/)[a-z]+'
         rel = re.findall(pattern, t.a['href'])
-        if len(rel)>1 and (rel[1], main_url + '/' + rel[1]) not in rel_links_menu:
+        if main_url == "www.latimes.com":
+            if len(rel)>0 and (rel[0], main_url + '/' + rel[0]) not in rel_links_menu:
+                rel_links_menu.append((rel[1],main_url + '/'+rel[1]))
+        elif len(rel)>1 and (rel[1], main_url + '/' + rel[1]) not in rel_links_menu:
             rel_links_menu.append((rel[1],main_url + '/'+rel[1]))
 
     return rel_links_menu
 
-def get_articles(sections_list):
+#jornado tag_type = 'h3'
+#latimes tag_type = 'h4'
+#latimes class_type = 'trb_outfit_relatedListTitle'
+
+def get_articles(sections_list, tag_type, class_type=None):
     '''
     Retrieve articles from every section in the 
     list of sections
@@ -50,7 +60,10 @@ def get_articles(sections_list):
         html = pm.urlopen(url= s, method="GET").data
 
         soup = bs4.BeautifulSoup(html, 'lxml')
-        tag_list = soup.find_all('h4')
+        if class_type:
+            tag_list = soup.find_all(tag_type, class_ = class_type)
+        else:
+            tag_list = soup.find_all(tag_type)
         
         for tag in tag_list:
             article = tag.a['href']
