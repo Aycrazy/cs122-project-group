@@ -15,3 +15,17 @@ def get_input(source, text, from_month, from_day, from_year, to_month, to_day, t
 
     return archive_url
 
+
+def get_sections(archive_url, tag_type, class_type):
+    '''
+    Find all the sections in the newspaper
+    Inputs: main url 
+    Returns: A list with the links for all the sections
+    '''
+    pm = urllib3.PoolManager()
+    html = pm.urlopen(url= main_url, method="GET").data
+    soup = bs4.BeautifulSoup(html,'lxml')
+
+    tag_list = soup.find_all('td', class_= top)
+
+    return [tag.a['href'] for tag in tag_list]
