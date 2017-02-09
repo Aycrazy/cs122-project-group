@@ -26,7 +26,7 @@ def get_sections(main_url, tag_type, class_type):
     html = pm.urlopen(url= main_url, method="GET").data
     soup = bs4.BeautifulSoup(html,'lxml')
 
-    tag_list = soup.find_all(tag_, class_= class_type)
+    tag_list = soup.find_all(tag_type, class_= class_type)
 
     rel_links_menu = []
     for t in tag_list: 
