@@ -9,7 +9,6 @@ import bs4
 import urllib3
 import csv
 import pandas as pd
-import datetime as dt
 
 def get_historical_stock(start_date, end_date, ticker):
 	'''
