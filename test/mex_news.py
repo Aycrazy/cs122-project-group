@@ -30,8 +30,6 @@ user_agents = ["Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Fire
              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
              "Mozilla/5.0 (Windows NT 6.2; rv:22.0) Gecko/20130405 Firefox/23.0"]
 
-def get_sections(main_url):
-
 #jornada tag_type = 'li'
 #jornada class_type = 'fixed-menu-p'
 #latimes tag_type = 'li'
