@@ -18,6 +18,7 @@ main_url = "http://www.jornada.unam.mx/ultimas"
 
 def get_user_agent():
 
+
     '''
     '''
     user_agents = []
@@ -31,7 +32,6 @@ def get_user_agent():
     return stacked.sample(1).reset_index()[0][0].strip(" ")
 
 
-#def get_sections(main_url):
 
 #jornada tag_type = 'li'
 #jornada class_type = 'fixed-menu-p'

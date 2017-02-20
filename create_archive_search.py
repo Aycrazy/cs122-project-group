@@ -48,8 +48,6 @@ def get_articles(archive_url, tag_type, class_type):
 def get_user_agent():
     '''
     '''
-    
-
     user_agents = []
 
     usertext = pd.read_table('newspaper/resources/misc/useragents.txt',sep='*', header=None)
@@ -58,5 +56,5 @@ def get_user_agent():
 
     pd.set_option('display.width', 1000)
 
-    return stacked.sample(1).reset_index()[0][0]
+    return stacked.sample(1).reset_index()[0][0].strip(' ')
 
