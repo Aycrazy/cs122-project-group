@@ -16,21 +16,22 @@ from newspaper.configuration import Configuration
 
 main_url = "http://www.jornada.unam.mx/ultimas"
 
+def get_user_agent():
 
-user_agents = ["Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0",
-             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
-             "Mozilla/5.0 (Windows NT 6.2; rv:22.0) Gecko/20130405 Firefox/23.0",
-             "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:23.0) Gecko/20130406 Firefox/23.0",
-             "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:23.0) Gecko/20131011 Firefox/23.0",
-             "Mozilla/5.0 (Windows NT 6.2; rv:22.0) Gecko/20130405 Firefox/22.0",
-             "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0",
-             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:25.0) Gecko/20100101 Firefox/25.0",
-             "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko/20100101 Firefox/24.0",
-             "Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0",
-             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
-             "Mozilla/5.0 (Windows NT 6.2; rv:22.0) Gecko/20130405 Firefox/23.0"]
+    '''
+    '''
+    user_agents = []
 
-def get_sections(main_url):
+    usertext = pd.read_table('useragents.txt',sep='*', header=None)
+
+    stacked = usertext.stack()
+
+    pd.set_option('display.width', 1000)
+
+    return stacked.sample(1).reset_index()[0][0].strip(" ")
+
+
+#def get_sections(main_url):
 
 #jornada tag_type = 'li'
 #jornada class_type = 'fixed-menu-p'
@@ -62,7 +63,7 @@ def get_sections(main_url, tag_type, class_type):
 
     return rel_links_menu
 
-#jornado tag_type = 'h3'
+#jornado tag_type = 'h4'
 #latimes tag_type = 'h4'
 #latimes class_type = 'trb_outfit_relatedListTitle'
 
@@ -106,20 +107,20 @@ def get_info(dictionary):
     for key, item in dictionary.items():
         count = 0
         for i in item:
-            sleep(randint(5,15))
-            #config = Configuration()
-            #config.browser_user_agent = random.choice(user_agents)
+            #sleep(randint(1,5))
+            config = Configuration()
+            config.browser_user_agent = get_user_agent()
             article = Article(i, language = 'es')
-            
-            #article.download()
-            article.build()
-            count = count + 1
-            title = article.title
-            print(title, key, count)
-            date = article.publish_date
-            text = article.text
-            if key not in rv:
-                rv[key] = []
-            rv[key].append((title, date, text))
+            article.download()
+            if article.is_downloaded == True:
+                article.parse()
+                count = count + 1
+                title = article.title
+                print(title, key, count)
+                date = article.publish_date
+                text = article.text
+                if key not in rv:
+                    rv[key] = []
+                rv[key].append((title, date, text))
 
     return rv
