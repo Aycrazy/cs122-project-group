@@ -14,7 +14,9 @@ import pandas as pd
 from newspaper.configuration import Configuration
 
 
-main_url = "http://www.jornada.unam.mx/ultimas"
+#main_url = "http://www.jornada.unam.mx/ultimas"
+years07_09 = ['2007', '2008', '2009']
+years10_16 = ['2010', '2011', '2012', '2013', '2014', '2015', '2016']
 
 def get_user_agent():
 
@@ -33,21 +35,72 @@ def get_user_agent():
 
 
 
+
+#jornada 10-16 tag_type = 'div'
+#jornada 10-16 class_type = 'main-sections gui'
 #jornada tag_type = 'li'
 #jornada class_type = 'fixed-menu-p'
 #latimes tag_type = 'li'
 #latimes class_type = 'trb_nh_ln_li'
+
 
 def get_sections(main_url, tag_type, class_type):
 
     '''
     Find all the sections in the newspaper
     Inputs: main url 
+            jornada 07-09 tag_type = 'a'
+            jornada 07-09 class_type = 'visualIconPadding'
+            jornada 10-16 tag_type = 'div'
+            jornada 10-16 class_type = 'main-sections gui'
+            jornada tag_type = 'li'
+            jornada class_type = 'fixed-menu-p'
+            latimes tag_type = 'li'
+            latimes class_type = 'trb_nh_ln_li'
+
     Returns: A list with the links for all the sections
     '''
     pm = urllib3.PoolManager()
     html = pm.urlopen(url= main_url, method="GET").data
     soup = bs4.BeautifulSoup(html,'lxml')
+
+    
+    if any(x for x in years07_09 if x in main_url) and 'jornada' in main_url:
+
+        tag_list = soup.find_all(tag_type, class_= class_type)
+
+        rel_links =[x['href'].strip('./') for x in tag_list if 'index' in x['href'] 
+                    and 'impresa' not in x['href'] and 'edito' not in x['href'] and 
+                    'correo' not in x['href'] and 'capital' not in x['href'] and 
+                    'cartones' not in x['href'] and 'fotografia' not in x['href']]
+
+        pattern = r'(\w*\.\w*\?\w*=)([a-z]+)'
+        rel_links_menu = []
+
+        for r in rel_links:
+            rel = re.findall(pattern, r)
+
+            if len(rel)>0 and (rel[0][1], main_url + r) not in rel_links_menu:
+                rel_links_menu.append((rel[0][1], main_url + r))
+
+        return rel_links_menu
+
+
+    elif any(x for x in years10_16 if x in main_url) and 'jornada' in main_url:
+
+        tag_list = soup.find_all(tag_type, class_ = class_type)[0]
+        rel_links = tag_list.find_all('a')
+        pattern = r'(?<=/)[a-z]+'
+        rel_links_menu = []
+
+        for r in rel_links:
+            rel = re.findall(pattern, r['href'])
+            if len(rel)>0 and (rel[0], main_url + rel[0]) not in rel_links_menu:
+                rel_links_menu.append((rel[0], main_url + rel[0]))
+
+        return rel_links_menu
+
+
 
     tag_list = soup.find_all(tag_type, class_= class_type)
 
