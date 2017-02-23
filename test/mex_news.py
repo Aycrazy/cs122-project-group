@@ -16,7 +16,7 @@ from newspaper.configuration import Configuration
 
 #main_url = "http://www.jornada.unam.mx/ultimas"
 years07_09 = ['2007', '2008', '2009']
-years10_16 = ['2010', '2011', '2012', '2013', '2014', '2015', '2016']
+years10_17 = ['2010', '2011', '2012', '2013', '2014', '2015', '2016','2017']
 
 def get_user_agent():
 
@@ -86,7 +86,7 @@ def get_sections(main_url, tag_type, class_type):
         return rel_links_menu
 
     #La Jornada section format between 2010 and 2016    
-    elif any(x for x in years10_16 if x in main_url) and 'jornada' in main_url:
+    elif any(x for x in years10_17 if x in main_url) and 'jornada' in main_url:
 
         tag_list = soup.find_all(tag_type, class_ = class_type)[0]
         rel_links = tag_list.find_all('a')
@@ -154,7 +154,7 @@ def get_articles(sections_list, tag_type, class_type=None, original_url=None):
             if any(x for x in years07_09 if x in s) and 'jornada' in s:
                 tag_list = soup.find_all(tag_type, id = class_type)
             #Tag list jornada articles 2010-2016
-            elif any(x for x in years10_16 if x in s) and 'jornada' in s:
+            elif any(x for x in years10_17 if x in s) and 'jornada' in s:
                 tag_list = soup.find_all(tag_type, class_ = class_type)
 
             else:
@@ -236,7 +236,7 @@ def master_function(main_url):
 
         return info_dictionary
 
-    elif any(x for x in years10_16 if x in complement) and 'jornada' in main:
+    elif any(x for x in years10_17 if x in complement) and 'jornada' in main:
         sections_list = get_sections(main_url, 'div', 'main-sections gui')
         articles = get_articles(sections_list, 'a', 'cabeza', main_url)
         info_dictionary = get_info(articles)
