@@ -116,6 +116,8 @@ def get_sections(main_url, tag_type, class_type):
 
     return rel_links_menu
 
+#jornada 07-09 tag-type = 'div'
+#jornada 07-09 class_type ='article_list'
 #jornada 10-16 tag_type = 'a'
 #jornada 10-16 class_type = "cabeza"
 #jornada tag_type = 'h4'
@@ -127,6 +129,14 @@ def get_articles(sections_list, tag_type, class_type=None, original_url=None):
     Retrieve articles from every section in the 
     list of sections
     Inputs: A list of sections
+            jornada 07-09 tag-type = 'div'
+            jornada 07-09 class_type ='article_list'
+            jornada 10-16 tag_type = 'a'
+            jornada 10-16 class_type = "cabeza"
+            jornada tag_type = 'h4'
+            latimes tag_type = 'h4'
+            latimes class_type = 'trb_outfit_relatedListTitle'
+
     Returns: A dictionary where each key corresponds
     to a section and contains the list of links for every
     article in that section
@@ -138,22 +148,39 @@ def get_articles(sections_list, tag_type, class_type=None, original_url=None):
         html = pm.urlopen(url= s, method="GET").data
 
         soup = bs4.BeautifulSoup(html, 'lxml')
+
         if class_type:
-            if any(x for x in years10_16 if x in s) and 'jornada' in s:
+            #Tag list jornada articles 2007-2009
+            if any(x for x in years07_09 if x in s) and 'jornada' in s:
+                tag_list = soup.find_all(tag_type, id = class_type)
+            #Tag list jornada articles 2010-2016
+            elif any(x for x in years10_16 if x in s) and 'jornada' in s:
                 tag_list = soup.find_all(tag_type, class_ = class_type)
 
             else:
+                #Tag list LATimes articles 
                 tag_list = soup.find_all(tag_type, class_ = class_type)
         else:
             tag_list = soup.find_all(tag_type)
 
         if original_url:
-            for t in tag_list:
-                rel_article = t['href']
+            if any(x for x in years07_09 if x in original_url) and 'jornada' in original_url:
+                if len(tag_list)>0:
+                    rel_list = tag_list[0].find_all('a')
+                    for t in rel_list:
+                        if 'index' in t['href']:
+                            rel_article = t['href']
+                            if key not in articles:
+                                articles[key]= []
+                            articles[key].append(original_url + rel_article)
+            else:
+                
+                for t in tag_list:
+                    rel_article = t['href']
 
-                if key not in articles:
-                    articles[key]= []
-                articles[key].append(original_url + rel_article)
+                    if key not in articles:
+                        articles[key]= []
+                    articles[key].append(original_url + rel_article)
 
         else:    
             for tag in tag_list:
