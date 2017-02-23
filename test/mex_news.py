@@ -219,3 +219,33 @@ def get_info(dictionary):
                 rv[key].append((title, date, text))
 
     return rv
+
+
+def master_function(main_url):
+    '''
+    '''
+    if 'jornada' in main_url:
+        pattern = r'(.*.mx)(.*)'
+        url_tuple = re.findall(pattern, main_url)[0]
+        main, complement = url_tuple
+
+    if any(x for x in years07_09 if x in complement) and 'jornada' in main:
+        sections_list = get_sections(main_url, 'a', 'visualIconPadding')
+        articles = get_articles(sections_list, 'div', 'article_list', main_url)
+        info_dictionary = get_info(articles)
+
+        return info_dictionary
+
+    elif any(x for x in years10_16 if x in complement) and 'jornada' in main:
+        sections_list = get_sections(main_url, 'div', 'main-sections gui')
+        articles = get_articles(sections_list, 'a', 'cabeza', main_url)
+        info_dictionary = get_info(articles)
+
+        return info_dictionary
+
+    else:
+        sections_list = get_sections(main_url, 'li', 'fixed-menu-p')
+        articles = get_articles(sections_list, 'h4')
+        info_dictionary = get_info(articles)
+
+        return info_dictionary
