@@ -12,7 +12,7 @@ from random import randint
 from time import sleep
 import pandas as pd
 from newspaper.configuration import Configuration
-
+import csv
 
 #main_url = "http://www.jornada.unam.mx/ultimas"
 years07_09 = ['2007', '2008', '2009']
@@ -249,3 +249,12 @@ def master_function(main_url):
         info_dictionary = get_info(articles)
 
         return info_dictionary
+
+
+def write_csv(dictionary):
+    with open('test.csv', 'w') as csv_file:
+        writer = csv.writer(csv_file, delimiter='|')
+        for key, value in dictionary.items():
+            for i in dictionary[key]:
+                title, date, text = i
+                writer.writerow([key, title, date, text])
