@@ -17,6 +17,8 @@ import csv
 #main_url = "http://www.jornada.unam.mx/ultimas"
 years07_09 = ['2007', '2008', '2009']
 years10_17 = ['2010', '2011', '2012', '2013', '2014', '2015', '2016','2017']
+visit = ['politica', 'economia', 'estados', 'sociedad', 'mundo', 'ciencias',
+        'cultura']
 
 def get_user_agent():
 
@@ -51,8 +53,8 @@ def get_sections(main_url, tag_type, class_type):
     Inputs: main url 
             jornada 07-09 tag_type = 'a'
             jornada 07-09 class_type = 'visualIconPadding'
-            jornada 10-16 tag_type = 'div'
-            jornada 10-16 class_type = 'main-sections gui'
+            jornada 10-17 tag_type = 'div'
+            jornada 10-17 class_type = 'main-sections gui'
             jornada tag_type = 'li'
             jornada class_type = 'fixed-menu-p'
             latimes tag_type = 'li'
@@ -72,7 +74,9 @@ def get_sections(main_url, tag_type, class_type):
         rel_links =[x['href'].strip('./') for x in tag_list if 'index' in x['href'] 
                     and 'impresa' not in x['href'] and 'edito' not in x['href'] and 
                     'correo' not in x['href'] and 'capital' not in x['href'] and 
-                    'cartones' not in x['href'] and 'fotografia' not in x['href']]
+                    'cartones' not in x['href'] and 'fotografia' not in x['href']
+                    and 'opinion' not in x['href'] and 'gastronomia' not in x['href']
+                    and 'espectaculos' not in x['href'] and 'deportes' not in x['href']]
 
         pattern = r'(\w*\.\w*\?\w*=)([a-z]+)'
         rel_links_menu = []
@@ -96,7 +100,8 @@ def get_sections(main_url, tag_type, class_type):
         for r in rel_links:
             rel = re.findall(pattern, r['href'])
             if len(rel)>0 and (rel[0], main_url + rel[0]) not in rel_links_menu:
-                rel_links_menu.append((rel[0], main_url + rel[0]))
+                if rel[0] in visit:
+                    rel_links_menu.append((rel[0], main_url + rel[0]))
 
         return rel_links_menu
 
@@ -108,11 +113,13 @@ def get_sections(main_url, tag_type, class_type):
     for t in tag_list: 
         pattern = r'(?<=/)[a-z]+'
         rel = re.findall(pattern, t.a['href'])
+
         if main_url == "www.latimes.com":
             if len(rel)>0 and (rel[0], main_url + '/' + rel[0]) not in rel_links_menu:
                 rel_links_menu.append((rel[1],main_url + '/'+rel[1]))
         elif len(rel)>1 and (rel[1], main_url + '/' + rel[1]) not in rel_links_menu:
-            rel_links_menu.append((rel[1],main_url + '/'+rel[1]))
+            if rel[1] in visit:
+                rel_links_menu.append((rel[1],main_url + '/'+rel[1]))
 
     return rel_links_menu
 
