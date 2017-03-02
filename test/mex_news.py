@@ -12,11 +12,39 @@ from random import randint
 from time import sleep
 import pandas as pd
 from newspaper.configuration import Configuration
+from datetime import date, timedelta as td
 import csv
+
+# create_data_range ref from http://stackoverflow.com/questions/7274267/print-all-day-dates-between-two-dates
 
 #main_url = "http://www.jornada.unam.mx/ultimas"
 years07_09 = ['2007', '2008', '2009']
 years10_17 = ['2010', '2011', '2012', '2013', '2014', '2015', '2016','2017']
+
+#for the entire data scrape we will 2007,01,01 to 2012,12,31
+
+def create_date_range(date1,date2):
+    '''
+    Will create a list of dates between given lower and upper date bounds
+    Inputs:
+        date1 = lower-bound date tuple
+        date2 = upper-bound date tuple
+    Outputs:
+        date_list = list of dates between ranges
+    '''
+    y1,m1,d1 = date1
+    y2,m2,d2 = date2
+
+    d1 = date(y1, m1, d1)
+    d2 = date(y2, m2, d1)
+
+    delta = d2 - d1
+    date_list = []
+
+    for i in range(delta.days + 1):
+         date_list.append(str(d1 + td(days=i)).replace('-','/'))
+         
+    return date_list
 
 def get_user_agent():
 
@@ -75,6 +103,7 @@ def get_sections(main_url, tag_type, class_type):
                     'cartones' not in x['href'] and 'fotografia' not in x['href']]
 
         pattern = r'(\w*\.\w*\?\w*=)([a-z]+)'
+        rel_links_menu = []
         rel_links_menu = []
 
         for r in rel_links:
@@ -219,6 +248,8 @@ def get_info(dictionary):
                 rv[key].append((title, date, text))
 
     return rv
+
+def 
 
 
 def master_function(main_url):
