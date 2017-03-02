@@ -22,9 +22,9 @@ years07_09 = ['2007', '2008', '2009']
 years10_17 = ['2010', '2011', '2012', '2013', '2014', '2015', '2016','2017']
 visit = ['politica', 'economia', 'estados', 'sociedad', 'mundo', 'ciencias',
         'cultura']
-<<<<<<< HEAD
 
 #for the entire data scrape we will 2007,01,01 to 2012,12,31
+
 
 def create_date_range(date1,date2):
     '''
@@ -48,8 +48,6 @@ def create_date_range(date1,date2):
          date_list.append(str(d1 + td(days=i)).replace('-','/'))
          
     return date_list
-=======
->>>>>>> c993941b5b5b7871aa3516271fbe3e710f4c0567
 
 def get_user_agent():
 
@@ -259,25 +257,26 @@ def get_info(dictionary):
 
     return rv
 
-def 
-
-
-def master_function(main_url):
+def master_function(complement):
     '''
     '''
-    if 'jornada' in main_url:
-        pattern = r'(.*.mx)(.*)'
-        url_tuple = re.findall(pattern, main_url)[0]
-        main, complement = url_tuple
+    #if 'jornada' in main_url:
+    #    pattern = r'(.*.mx)(.*)'
+    #    url_tuple = re.findall(pattern, main_url)[0]
+    #    main, complement = url_tuple
 
-    if any(x for x in years07_09 if x in complement) and 'jornada' in main:
+    jornada = 'http://www.jornada.unam.mx/'
+    main_url = jornada+complement+'/'
+    print(main_url)
+
+    if any(x for x in years07_09 if x in complement): # and 'jornada' in main:
         sections_list = get_sections(main_url, 'a', 'visualIconPadding')
         articles = get_articles(sections_list, 'div', 'article_list', main_url)
         info_dictionary = get_info(articles)
 
         return info_dictionary
 
-    elif any(x for x in years10_17 if x in complement) and 'jornada' in main:
+    elif any(x for x in years10_17 if x in complement): # and 'jornada' in main:
         sections_list = get_sections(main_url, 'div', 'main-sections gui')
         articles = get_articles(sections_list, 'a', 'cabeza', main_url)
         info_dictionary = get_info(articles)
