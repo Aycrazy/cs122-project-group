@@ -245,17 +245,26 @@ def get_info(dictionary):
             article = Article(i, language = 'es')
             article.download()
             if article.is_downloaded == True:
+                #rv['section'] = key
+                irv = {}
+                rv[count] = irv
                 article.parse()
                 count = count + 1
                 title = article.title
                 print(title, key, count)
                 date = article.publish_date
                 text = article.text
-                if key not in rv:
-                    rv[key] = []
-                rv[key].append((title, date, text))
-
+                #if key not in rv:
+                irv['section'] = key
+                irv['article'] = title
+                irv['date'] = date
+                irv['text'] = text #will be converted into sentiment score
+                #rv[key].append((title, date, text))
     return rv
+
+
+#def helper_funciton:
+
 
 def master_function(complement):
     '''
@@ -267,7 +276,7 @@ def master_function(complement):
 
     jornada = 'http://www.jornada.unam.mx/'
     main_url = jornada+complement+'/'
-    print(main_url)
+    #print(main_url)
 
     if any(x for x in years07_09 if x in complement): # and 'jornada' in main:
         sections_list = get_sections(main_url, 'a', 'visualIconPadding')
@@ -293,8 +302,9 @@ def master_function(complement):
 
 def write_csv(dictionary):
     with open('test.csv', 'w') as csv_file:
-        writer = csv.writer(csv_file, delimiter='|')
+        fieldnames = ['section','article','date','text' ]
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)#delimiter='|')
+        writer.writeheader()
         for key, value in dictionary.items():
-            for i in dictionary[key]:
-                title, date, text = i
-                writer.writerow([key, title, date, text])
+            #for i in dictionary[key]:
+            writer.writerow(value)
