@@ -10,6 +10,8 @@ import re
 #pattern = r'(?<=0)\d|\d{4}|[^0]\d*'
 #result --> ['2015', '4', '15']
 
+
+
 def get_date_ints(article_dates):
     date_ints= None
     datetime_list = []
@@ -21,6 +23,10 @@ def get_date_ints(article_dates):
     return datetime_list
 
 def get_sentiment_info(keyword,date_range):
+    '''
+    this will be run by the model to produce wanted output for sentiment analysis chart
+    '''
+
     sentiment_list = []
     article_dates = []
 

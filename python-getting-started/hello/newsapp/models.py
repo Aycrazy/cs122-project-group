@@ -5,13 +5,13 @@ from django.db import models
 #Key : {[(title, date, text), ... , (title, date, text)]
 
 class Forum(models.Model):
-    name = models.TextField()
+    section = models.TextField()
     homepage = models.URLField()
 
 class Jornada(models.Model):
 
-    name = models.ForeignKey(Forum, on_delete=models.CASCADE)
-    title = models.TextField()
+    section = models.ForeignKey(Forum, on_delete=models.CASCADE)
+    title = models.TextField(primary_key=True)
     author = models.TextField()
     pub_date = models.DateTimeField('date_published')
     nltk_score = models.IntegerField(default=0)
