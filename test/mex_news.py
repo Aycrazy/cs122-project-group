@@ -153,13 +153,42 @@ def get_sections(main_url, tag_type, class_type):
 
     return rel_links_menu
 
+
+#propublica tag_type = 'div'
+#propublica class_type = 'excerpt-thumb'
+
+def get_articles_pro(archive_url):
+    articles = {}
+    pm = urllib3.PoolManager()
+    html = pm.urlopen(url= archive_url, method="GET").data
+    soup = bs4.BeautifulSoup(html, 'lxml')
+    tag_list = soup.find_all('div', class_ = 'excerpt-thumb')
+    if tag_list[0]:
+        for index,tag in enumerate(tag_list):
+            rv= {}
+            articles[index] = rv
+            article = tag.a['href']
+            print(article)
+            config = Configuration()
+            config.browser_user_agent = get_user_agent()
+            article_object = Article(article)
+            article_object.download()
+            if article_object:
+                article_object.parse()
+                title = article_object.title
+                date = article_object.publish_date
+                text = article_object.text
+                rv['article'] = title
+                rv['date'] = date
+                rv['text'] = text
+    return articles
+
 #jornada 07-09 tag-type = 'div'
 #jornada 07-09 class_type ='article_list'
 #jornada 10-16 tag_type = 'a'
 #jornada 10-16 class_type = "cabeza"
 #jornada tag_type = 'h4'
-#latimes tag_type = 'h4'
-#latimes class_type = 'trb_outfit_relatedListTitle'
+
 
 def get_articles(sections_list, tag_type, class_type=None, original_url=None):
     '''
@@ -236,8 +265,9 @@ def get_info(dictionary):
     '''
     '''
     rv = {}
+    count = 0
     for key, item in dictionary.items():
-        count = 0
+        #count = 0
         for i in item:
             #sleep(randint(1,5))
             config = Configuration()
@@ -262,9 +292,15 @@ def get_info(dictionary):
                 #rv[key].append((title, date, text))
     return rv
 
+#Jornada Tags
+#07-09 stag_type = 'a', sclass_type = 'visualIconPadding', atag_type = 'div', aclass_type = 'article_list'
+#10-17 stag_type = 'div', sclass_type = 'main-sections gui', atag_type = 'a', aclass_type = 'cabeza'
+#else stag_type = 'li', sclass_type = 'fixed-menu-p', atag_type = 'h4', aclass_type = None
 
-#def helper_funciton:
-
+def helper_funciton(main_url, stag_type,sclass_type, atag_type, aclass_type):
+    sections_list = get_sections(main_url, stag_type, sclass_type)
+    articles = get_articles(sections_list, atag_type, aclass_type, main_url)
+    return get_info(articles)
 
 def master_function(complement):
     '''
@@ -279,26 +315,23 @@ def master_function(complement):
     #print(main_url)
 
     if any(x for x in years07_09 if x in complement): # and 'jornada' in main:
-        sections_list = get_sections(main_url, 'a', 'visualIconPadding')
-        articles = get_articles(sections_list, 'div', 'article_list', main_url)
-        info_dictionary = get_info(articles)
-
+        #sections_list = get_sections(main_url, 'a', 'visualIconPadding')
+        #articles = get_articles(sections_list, 'div', 'article_list', main_url)
+        info_dictionary = helper_funciton(main_url,'a','visualIconPadding', 'div','article_list')
         return info_dictionary
 
     elif any(x for x in years10_17 if x in complement): # and 'jornada' in main:
-        sections_list = get_sections(main_url, 'div', 'main-sections gui')
-        articles = get_articles(sections_list, 'a', 'cabeza', main_url)
-        info_dictionary = get_info(articles)
-
+        #sections_list = get_sections(main_url, 'div', 'main-sections gui')
+        #articles = get_articles(sections_list, 'a', 'cabeza', main_url)
+        #info_dictionary = get_info(articles)
+        info_dictionary = helper_funciton(main_url,'div','main-sections gui', 'a','cabeza')
         return info_dictionary
 
     else:
-        sections_list = get_sections(main_url, 'li', 'fixed-menu-p')
-        articles = get_articles(sections_list, 'h4')
-        info_dictionary = get_info(articles)
-
+        #sections_list = get_sections(main_url, 'li', 'fixed-menu-p')
+        #articles = get_articles(sections_list, 'h4')
+        info_dictionary = helper_funciton(main_url,'li','fixed-menu-p', 'h4', None)
         return info_dictionary
-
 
 def write_csv(dictionary):
     with open('test.csv', 'w') as csv_file:
@@ -306,5 +339,14 @@ def write_csv(dictionary):
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)#delimiter='|')
         writer.writeheader()
         for key, value in dictionary.items():
+            #for i in dictionary[key]:
+            writer.writerow(value)
+
+def write_csv_pro(dictionary):
+    with open('test.csv', 'w') as csv_file:
+        fieldnames = ['article','date','text' ]
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)#delimiter='|')
+        writer.writeheader()
+        for value in dictionary.values():
             #for i in dictionary[key]:
             writer.writerow(value)
