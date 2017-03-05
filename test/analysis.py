@@ -38,6 +38,14 @@ df.scores.corr(df.findata)
 
 def scatter_plot(data, save_to = None):
     '''
+    Computes the scatter plot for sentiment scores
+    and financial data for a specified time period
+    Inputs:
+            Pandas DataFrame
+            Filename, default value None
+    Returns:
+            It can only show the plot or save a 
+            file with the plot
     '''
     colors = np.random.rand(len(dt))
     area = np.pi * (15 * np.random.rand(len(dt)))**2  # 0 to 15 point radii
@@ -57,6 +65,14 @@ def scatter_plot(data, save_to = None):
 
 def histo_plot(data, save_to = None):
     '''
+    Computes the histograms for sentiment scores
+    and financial data for a specified time period
+    Inputs:
+            Pandas DataFrame
+            Filename, default value None
+    Returns:
+            It can only show the plot or save a 
+            file with the plot
     '''
     data.hist(layout=(1,2)) 
 
@@ -73,6 +89,15 @@ def histo_plot(data, save_to = None):
 
 def time_series(data, save_to = None):
     '''
+    Plots sentiment scores and financial data for
+    a specified time period
+    
+    Inputs:
+            Pandas DataFrame
+            Filename, default value None
+    Returns:
+            It can only show the plot or save a 
+            file with the plot
     '''
 
     f, ax = plt.subplots()
