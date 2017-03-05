@@ -1,7 +1,12 @@
 from django.contrib import admin
-from .models import Forum, Jornada, ProPublica
-
+from .models import ArticlesManager, Article
+import csv
 # Register your models here.
-admin.site.register(Forum)
-admin.site.register(Jornada)
-admin.site.register(ProPublica)
+
+admin.site.register(ArticlesManager)
+admin.site.register(Article)
+
+
+#Find the file -- python any csv in the file path 
+#Figure out exactly where this is to run
+

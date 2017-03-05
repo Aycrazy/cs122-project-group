@@ -5,13 +5,13 @@ from django.db import models
 #Key : {[(title, date, text), ... , (title, date, text)]
 
 class ArticlesManager(models.Model):
-    def create_article(self,title, pub_date, nltk_score, source)
-        article = self.create(title = title, pub_date = pub_date\
+    def create_article(self,title, pub_date, nltk_score, source):
+        article = self.create(title = title, pub_date = pub_date,\
             nltk_score = nltk_score, source = source)
         return article
 
-class Articles(models.Model):
-    article_title = models.ForeignKey(Forum, on_delete=models.CASCADE)
+class Article(models.Model):
+    article_title = models.ForeignKey(ArticlesManager, on_delete=models.CASCADE)
     author = models.TextField()
     pub_date = models.DateTimeField('date_published')
     nltk_score = models.IntegerField(default=0)
