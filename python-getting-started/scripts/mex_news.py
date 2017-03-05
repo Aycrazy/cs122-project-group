@@ -185,6 +185,7 @@ def get_articles_pro(complement):
                 rv['article'] = title
                 rv['date'] = date
                 rv['text'] = text
+                rv['source'] = 'ProPublica'
 
         write_csv_pro(articles, 'propublica_'+ re.sub("/", "_", complement) +'.csv'))
 
@@ -292,10 +293,10 @@ def get_info(dictionary):
                 date = article.publish_date
                 text = article.text
                 #if key not in rv:
-                irv['section'] = key
                 irv['article'] = title
                 irv['date'] = date
                 irv['text'] = text #will be converted into sentiment score
+                irv['source'] = 'Jornada'
                 #rv[key].append((title, date, text))
     return rv
 
