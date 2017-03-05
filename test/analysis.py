@@ -36,35 +36,46 @@ df.scores.corr(df.findata)
 
 # Scatter
 
-def scatter_plot(data):
+def scatter_plot(data, save_to = None):
     '''
     '''
     colors = np.random.rand(len(dt))
     area = np.pi * (15 * np.random.rand(len(dt)))**2  # 0 to 15 point radii
-    plt.figure()
+    f = plt.figure()
     plt.scatter(data.findata, data.scores, s=area, c=colors, alpha=0.5)
     plt.grid(True)
-    return plt.show()
+
+    if save_to == None:
+
+        plt.show()
+
+    else:
+        f.savefig(save_to)
 
 
 # Histograms
 
-def histo_plot(data):
+def histo_plot(data, save_to = None):
     '''
     '''
-    plt.figure()
+    data.hist(layout=(1,2)) 
 
-    return plt.show()
+    if save_to == None:
+
+        plt.show()
+
+    else:
+        plt.savefig(save_to)
 
 
 
 # Time Series
 
-def time_series(data):
+def time_series(data, save_to = None):
     '''
     '''
 
-    fig, ax = plt.subplots()
+    f, ax = plt.subplots()
 
     with pd.plot_params.use('x_compat', True):
 
@@ -78,4 +89,9 @@ def time_series(data):
    
         plt.grid()
 
-    return plt.show()
+    if save_to == None:
+
+        plt.show()
+
+    else:
+        f.savefig(save_to)
