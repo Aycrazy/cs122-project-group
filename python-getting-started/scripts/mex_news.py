@@ -157,7 +157,11 @@ def get_sections(main_url, tag_type, class_type):
 #propublica tag_type = 'div'
 #propublica class_type = 'excerpt-thumb'
 
-def get_articles_pro(archive_url):
+def get_articles_pro(complement):
+    '''
+    '''
+    propublica = 'https://www.propublica.org/archive/'
+    archive_url = propublica +complement+'/'
     articles = {}
     pm = urllib3.PoolManager()
     html = pm.urlopen(url= archive_url, method="GET").data
@@ -181,6 +185,9 @@ def get_articles_pro(archive_url):
                 rv['article'] = title
                 rv['date'] = date
                 rv['text'] = text
+
+        write_csv_pro(articles, 'propublica_'+ re.sub("/", "_", complement) +'.csv'))
+
     return articles
 
 #jornada 07-09 tag-type = 'div'
@@ -318,6 +325,7 @@ def master_function(complement):
         #sections_list = get_sections(main_url, 'a', 'visualIconPadding')
         #articles = get_articles(sections_list, 'div', 'article_list', main_url)
         info_dictionary = helper_funciton(main_url,'a','visualIconPadding', 'div','article_list')
+        write_csv(info_dictionary, 'jornada_'+ re.sub("/", "_", complement) +'.csv')
         return info_dictionary
 
     elif any(x for x in years10_17 if x in complement): # and 'jornada' in main:
@@ -325,16 +333,18 @@ def master_function(complement):
         #articles = get_articles(sections_list, 'a', 'cabeza', main_url)
         #info_dictionary = get_info(articles)
         info_dictionary = helper_funciton(main_url,'div','main-sections gui', 'a','cabeza')
+        write_csv(info_dictionary, 'jornada_'+ re.sub("/", "_", complement) +'.csv')
         return info_dictionary
 
     else:
         #sections_list = get_sections(main_url, 'li', 'fixed-menu-p')
         #articles = get_articles(sections_list, 'h4')
         info_dictionary = helper_funciton(main_url,'li','fixed-menu-p', 'h4', None)
+        write_csv(info_dictionary, 'jornada_'+ re.sub("/", "_", complement) +'.csv')
         return info_dictionary
 
-def write_csv(dictionary):
-    with open('test.csv', 'w') as csv_file:
+def write_csv(dictionary, filename):
+    with open(filename, 'w') as csv_file:
         fieldnames = ['section','article','date','text' ]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)#delimiter='|')
         writer.writeheader()
@@ -342,8 +352,8 @@ def write_csv(dictionary):
             #for i in dictionary[key]:
             writer.writerow(value)
 
-def write_csv_pro(dictionary):
-    with open('test.csv', 'w') as csv_file:
+def write_csv_pro(dictionary, filename):
+    with open(filename, 'w') as csv_file:
         fieldnames = ['article','date','text' ]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)#delimiter='|')
         writer.writeheader()
