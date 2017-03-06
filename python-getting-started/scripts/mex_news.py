@@ -183,11 +183,11 @@ def get_articles_pro(complement):
                 date = article_object.publish_date
                 text = article_object.text
                 rv['article'] = title
-                rv['date'] = date
-                rv['text'] = text
+                rv['pub_date'] = date
+                rv['nltk_score'] = text
                 rv['source'] = 'ProPublica'
 
-        write_csv_pro(articles, 'propublica_'+ re.sub("/", "_", complement) +'.csv'))
+        write_csv_pro(articles, 'propublica_'+ re.sub("/", "_", complement) +'.csv')
 
     return articles
 
@@ -294,8 +294,8 @@ def get_info(dictionary):
                 text = article.text
                 #if key not in rv:
                 irv['article'] = title
-                irv['date'] = date
-                irv['text'] = text #will be converted into sentiment score
+                irv['pub_date'] = date
+                irv['ntlk_score'] = text #will be converted into sentiment score
                 irv['source'] = 'Jornada'
                 #rv[key].append((title, date, text))
     return rv
@@ -346,7 +346,7 @@ def master_function(complement):
 
 def write_csv(dictionary, filename):
     with open(filename, 'w') as csv_file:
-        fieldnames = ['section','article','date','text' ]
+        fieldnames = ['article','pub_date','nltk_score','source' ]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)#delimiter='|')
         writer.writeheader()
         for key, value in dictionary.items():
@@ -355,7 +355,7 @@ def write_csv(dictionary, filename):
 
 def write_csv_pro(dictionary, filename):
     with open(filename, 'w') as csv_file:
-        fieldnames = ['article','date','text' ]
+        fieldnames = ['article','pub_date','nltk_score','source' ]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)#delimiter='|')
         writer.writeheader()
         for value in dictionary.values():

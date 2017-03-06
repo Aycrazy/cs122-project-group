@@ -84,7 +84,7 @@ DATABASES = {
     }
 }
 #DATABASES['default'] =  dj_database_url.config()
-DATABASES['default'] = dj_database_url.config(default='postgres://andrewyaspan:password@localhost:5432/newsdb')
+DATABASES['default'] = dj_database_url.config(default='postgres://andrewyaspan:password@localhost:5432/postgres')
 
 # DATABASES = {
 #     'default': {

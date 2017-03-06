@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ArticlesManager, Article
+from newsapp.models import ArticlesManager, Article
 import csv
 # Register your models here.
 
