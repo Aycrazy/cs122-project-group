@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 
 class Article(models.Model):
     title = models.TextField()
-    pub_date = models.DateTimeField('date_published')
+    pub_date = models.DateField('date_published')
     nltk_score = models.IntegerField(default=0)
     source = models.TextField()
 
