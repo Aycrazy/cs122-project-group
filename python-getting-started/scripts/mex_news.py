@@ -290,7 +290,7 @@ def get_info(dictionary):
                 count = count + 1
                 title = article.title
                 print(title, key, count)
-                date = article.publish_date.date
+                date = article.publish_date.date()
                 text = article.text
                 #if key not in rv:
                 irv['article'] = title
