@@ -1,10 +1,10 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 #Key : {[(title, date, text), ... , (title, date, text)]
 
-class ArticlesManager(models.Manager):
+class ArticlesManager(models.Model):
     def create_article(self,article, pub_date, nltk_score, source):
         article = self.create(article = article, pub_date = pub_date,\
             nltk_score = nltk_score, source = source)
