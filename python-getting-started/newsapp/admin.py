@@ -1,9 +1,9 @@
 from django.contrib import admin
-from newsapp.models import ArticlesManager, Article
+from newsapp.models import Article #, ArticlesManager
 import csv
 # Register your models here.
 
-admin.site.register(ArticlesManager)
+#admin.site.register(ArticlesManager)
 admin.site.register(Article)
 
 
