@@ -10,24 +10,20 @@ from django.contrib.auth.models import User
 class Article(models.Model):
     title = models.TextField()
     pub_date = models.DateField('date_published')
-    nltk_score = models.IntegerField(default=0)
+    nltk_score = models.FloatField(default=0)
     source = models.TextField()
-
-    #objects = ArticlesManager()
-
-
     def __str__(self):
         return self.title
-'''
-class ProPublica(models.Model):
 
-    article_title = models.ForeignKey(Forum, on_delete=models.CASCADE)
-    author = models.TextField()
-    pub_date = models.DateTimeField('date_published')
-    nltk_score = models.IntegerField(default=0)
+class Ticker(models.Model):
+    date = models.ManyToManyField(Article)
+    close = models.FloatField(default=0)
+    ticker = models.TextField()
 
-    def __str__(self):
-        return self.title
-'''
+class Currency(models.Model):
+    date = models.ManyToManyField(Article)
+    currency = models.FloatField(default=0)
+    country = models.TextField()
+
 
     
