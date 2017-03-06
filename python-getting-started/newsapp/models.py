@@ -14,7 +14,7 @@ class Article(models.Model):
     source = models.TextField()
     def __str__(self):
         return self.title
-
+''''
 class Ticker(models.Model):
     date = models.ManyToManyField(Article)
     close = models.FloatField(default=0)
@@ -24,6 +24,6 @@ class Currency(models.Model):
     date = models.ManyToManyField(Article)
     currency = models.FloatField(default=0)
     country = models.TextField()
-
+'''
 
     
