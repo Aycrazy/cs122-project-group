@@ -180,10 +180,10 @@ def get_articles_pro(complement):
             if article_object:
                 article_object.parse()
                 title = article_object.title
-                date = article_object.publish_date
+                #date = article_object.publish_date
                 text = article_object.text
                 rv['article'] = title
-                rv['pub_date'] = date
+                rv['pub_date'] = complement
                 rv['nltk_score'] = text
                 rv['source'] = 'ProPublica'
 
@@ -290,12 +290,12 @@ def get_info(dictionary):
                 count = count + 1
                 title = article.title
                 print(title, key, count)
-                date = article.publish_date
+                date = article.publish_date.date
                 text = article.text
                 #if key not in rv:
                 irv['article'] = title
                 irv['pub_date'] = date
-                irv['ntlk_score'] = text #will be converted into sentiment score
+                irv['nltk_score'] = text #will be converted into sentiment score
                 irv['source'] = 'Jornada'
                 #rv[key].append((title, date, text))
     return rv

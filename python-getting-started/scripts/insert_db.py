@@ -6,6 +6,7 @@ import re
 import glob, os
 import csv
 import manage
+import datetime
 
 def get_date_ints(article_date):
     date_ints= None
@@ -13,7 +14,7 @@ def get_date_ints(article_date):
     #for article_date in article_dates:
     date_ints = re.findall(pattern, article_date)
     print(date_ints)
-    y,m,d = date_ints[0]
+    y,m,d = date_ints
     return datetime.date(int(y),int(m),int(d))
 
 
@@ -28,7 +29,12 @@ def run():
             next(reader,None)
             print('hellos')
             for row in reader:
-                date_correct = get_date_ints(row[1])
-                article = Article.objects.create(title=row[0],pub_date=date_correct,\
-                    nltk_score=row[2],source = row[3])
+                if 'propublica' in file:
+                    date = get_date_ints(row[1])
+                else:
+                    date = row[1]
+                print('date_correct ran')
+                article = Article(title=row[0],pub_date=date,\
+                    nltk_score=.02,source = row[3])
+                print('should be created')
                 article.save()
