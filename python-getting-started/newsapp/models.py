@@ -12,8 +12,9 @@ class Article(models.Model):
     pub_date = models.DateField('date_published')
     nltk_score = models.FloatField(default=0)
     source = models.TextField()
+
     def __str__(self):
-        return self.title
+        return str([self.title,self.pub_date,self.nltk_score,self.source])
 ''''
 class Ticker(models.Model):
     date = models.ManyToManyField(Article)

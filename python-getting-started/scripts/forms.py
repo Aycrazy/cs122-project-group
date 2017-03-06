@@ -6,7 +6,7 @@ import datetime #for checking renewal date range.
 class UserInput(forms.Form):
     start_date = forms.DateField(help_text="Enter a start date after 04/01/2008")
     end_date = forms.DateField(help_text="Enter an end date before 04/01/2013")
-    keyword = forms.CharField(help_text="Enter a keyword or phrase")
+    keyword = forms.CharField(help_text="Enter a keyword or phrase in English or Spanish")
     stock_or_currency = forms.ChoiceField(choices=['stocks','currency'])
     home = forms.ChoiceField(choices=['United States','Mexico'])
     other = forms.ChoiceField(choices=['United States','Mexico'])
