@@ -167,27 +167,28 @@ def get_articles_pro(complement):
     html = pm.urlopen(url= archive_url, method="GET").data
     soup = bs4.BeautifulSoup(html, 'lxml')
     tag_list = soup.find_all('div', class_ = 'excerpt-thumb')
-    if tag_list[0]:
-        for index,tag in enumerate(tag_list):
-            rv= {}
-            articles[index] = rv
-            article = tag.a['href']
-            print(article)
-            config = Configuration()
-            config.browser_user_agent = get_user_agent()
-            article_object = Article(article)
-            article_object.download()
-            if article_object:
-                article_object.parse()
-                title = article_object.title
-                #date = article_object.publish_date
-                text = article_object.text
-                rv['article'] = title
-                rv['pub_date'] = complement
-                rv['nltk_score'] = text
-                rv['source'] = 'ProPublica'
+    if tag_list:
+        if tag_list[0]:
+            for index,tag in enumerate(tag_list):
+                rv= {}
+                articles[index] = rv
+                article = tag.a['href']
+                print(article)
+                config = Configuration()
+                config.browser_user_agent = get_user_agent()
+                article_object = Article(article)
+                article_object.download()
+                if article_object:
+                    article_object.parse()
+                    title = article_object.title
+                    #date = article_object.publish_date
+                    text = article_object.text
+                    rv['article'] = title
+                    rv['pub_date'] = complement
+                    rv['nltk_score'] = text
+                    rv['source'] = 'ProPublica'
 
-        write_csv_pro(articles, 'propublica_'+ re.sub("/", "_", complement) +'.csv')
+            write_csv_pro(articles, 'propublica_'+ re.sub("/", "_", complement) +'.csv')
 
     return articles
 

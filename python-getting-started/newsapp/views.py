@@ -3,31 +3,41 @@ from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 import requests
 from scripts.financial_scraper import get_historical_stock, get_exchange_rate, get_historical_currency #dict_to_csv
-from .models import Article,Currency, Ticker
+from .models import Article
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 import datetime
-from .forms UserInput
+from scripts.forms import UserInput
 # Create your views here.
 
-def my_view(request):
+def search_news_sentiment(request):
 
     # If this is a POST request then process the Form data
-    if request.method = 'POST':
+    if request.method == 'POST':
 
         # Create a form instance and populate it with data from the request (binding):
         form = UserInput(request.POST)
 
         # Check if the form is valid:
-        
-    if form.stock_or_currency = 'currency':
+
+        if UserInput.stock_or_currency == 'stock':
+            ticker = form.stock_choice()
+            user_dict = get_historical_stock(form.start_date,form.end_date, ticker)
+
+        user_list = [for v in user_dict.values()]
+
+        if form.home == 'United States':
+            source = 'ProPublica'
+        else:
+            source = 'Jornada'
+
+        Article.objects.filter(pub_date__range=(form.start_date,form.end_date),)
     #    if Currency.objects.filter(ticker=form.choose_stock,date=):
     #        Currency.
         #if date is a weekend choose Friday of that week
         
         #call get_historical stock with date ranges and selected ticker
-        #load dictionary into currency sql? (maybe if necessary)
         #turn dictionary close into list
 
     #for dates chosen and newspaper source
