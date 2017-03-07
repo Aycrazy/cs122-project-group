@@ -188,6 +188,7 @@ def get_articles_pro(complement):
                 rv['article'] = title
                 rv['pub_date'] = complement
                 rv['nltk_score'] = get_nltk_score(text)
+                rv['nltk_score_title'] =get_nltk_score(title)
                 rv['source'] = 'ProPublica'
 
         write_csv_pro(articles, 'propublica_'+ re.sub("/", "_", complement) +'.csv')
@@ -362,7 +363,7 @@ def write_csv(dictionary, filename):
 
 def write_csv_pro(dictionary, filename):
     with open(filename, 'w') as csv_file:
-        fieldnames = ['article','pub_date','nltk_score','source' ]
+        fieldnames = ['article','pub_date','nltk_score','source', 'nltk_score_title' ]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)#delimiter='|')
         writer.writeheader()
         for value in dictionary.values():
