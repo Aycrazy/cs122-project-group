@@ -12,16 +12,24 @@ from scripts.forms import UserInput
 # Create your views here.
 
 def search_news(request):
-    return render(request,'search.html')
+    if request.method == 'POST':
+        # Create a form instance and populate it with data from the request (binding):
+        form = UserInput(request.POST, initial= data)
+        if form.is_valid():
+            HttpResponse('Thank you we are processing your request')
+        else:
+            form = UserInput()
+    return render(request,'newsapp/templates/ssearch.html',{'form': form})
 
 def results(request):
 
     # If this is a POST request then process the Form data
     if request.method == 'POST':
-        if form.is_valid():
 
-            # Create a form instance and populate it with data from the request (binding):
-            form = UserInput(request.POST, initial= data)
+        # Create a form instance and populate it with data from the request (binding):
+        form = UserInput(request.POST, initial= data)
+
+        if form.is_valid():
 
             # Check if the form is valid:
 
@@ -47,8 +55,8 @@ def results(request):
                 nltk_scores.append(article.nltk_score)
 
             c_or_s_list = [v for k,v in user_dict.items() if k in dates]
-
-
+    else:
+        form= UserInput()
         # 
 
     #    if Currency.objects.filter(ticker=form.choose_stock,date=):
@@ -63,13 +71,20 @@ def results(request):
             #if there are multiple articles for a keyword for that day -average the sentiment
             #else just use the sentiment for the one article
             #make a list of dates
-    return render(request,'results.html',{'form': form})
+    return render(request,'newsapp/templates/results.html')
 
 def index(request):
+    if request.method == 'POST':
+        # Create a form instance and populate it with data from the request (binding):
+        form = UserInput(request.POST, initial= data)
+        if form.is_valid():
+            HttpResponse('Thank you we are processing your request')
+        else:
+            form = UserInput()
     #r = requests.get('http://httpbin.org/status/418')
     #print (r.text)
 
-    return render(request,'index.html',{'form': form})
+    return render(request,'newsapp/templates/index.html',{'form': form})
 
 def db(request):
 
