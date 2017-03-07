@@ -41,7 +41,7 @@ def create_date_range(date1,date2):
     y2,m2,d2 = date2
 
     d1 = date(y1, m1, d1)
-    d2 = date(y2, m2, d1)
+    d2 = date(y2, m2, d2)
 
     delta = d2 - d1
     date_list = []
@@ -351,6 +351,21 @@ def master_function(complement):
         info_dictionary = helper_funciton(main_url,'li','fixed-menu-p', 'h4', None)
         write_csv(info_dictionary, 'jornada_'+ re.sub("/", "_", complement) +'.csv')
         return info_dictionary
+
+def downloader(start_date, end_date):
+    '''
+    Inputs:
+        start_date (YYYY, M, D)
+        end_date (YYYY, M, D)
+
+    Outputs:
+        csv_file (articles per day for the date range)
+    '''
+    date_range = create_date_range(start_date, end_date)
+
+    for day in date_range:
+        master_function(day)
+        get_articles_pro(day)
 
 def write_csv(dictionary, filename):
     with open(filename, 'w') as csv_file:
