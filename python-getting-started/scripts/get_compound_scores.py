@@ -11,8 +11,6 @@ FILE_1 = "files-to-translate/span_eng_dict.txt"
 FILE_2 = "files-to-translate/span_eng_terms.txt"
 FILE_3 = "files-to-translate/wiktionary_en_sp.txt"
 
-TRANSLATOR_DICT = get_translate_dict()
-
 def get_translate_dict(file1=FILE_1, file2=FILE_2, file3=FILE_3):
 	'''
 	Takes three txt files from dict.info and returns a dictionary of spanish words with their respective english translations.
@@ -65,6 +63,8 @@ def get_translate_dict(file1=FILE_1, file2=FILE_2, file3=FILE_3):
 			mapped_dict[x] = y
 
 	return mapped_dict
+
+TRANSLATOR_DICT = get_translate_dict()
 
 def translate_article(article, translator_dict=TRANSLATOR_DICT):
 	'''
