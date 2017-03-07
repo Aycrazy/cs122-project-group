@@ -16,6 +16,7 @@ from datetime import date, timedelta as td
 import csv
 from get_compound_scores import *
 import mtranslate
+import sys
 
 # create_data_range ref from http://stackoverflow.com/questions/7274267/print-all-day-dates-between-two-dates
 
@@ -101,59 +102,66 @@ def get_sections(main_url, tag_type, class_type):
     if any(x for x in years07_09 if x in main_url) and 'jornada' in main_url:
 
         tag_list = soup.find_all(tag_type, class_= class_type)
+        if tag_list:
+            rel_links =[x['href'].strip('./') for x in tag_list if 'index' in x['href'] 
+                        and 'impresa' not in x['href'] and 'edito' not in x['href'] and 
+                        'correo' not in x['href'] and 'capital' not in x['href'] and 
+                        'cartones' not in x['href'] and 'fotografia' not in x['href']
+                        and 'opinion' not in x['href'] and 'gastronomia' not in x['href']
+                        and 'espectaculos' not in x['href'] and 'deportes' not in x['href']]
 
-        rel_links =[x['href'].strip('./') for x in tag_list if 'index' in x['href'] 
-                    and 'impresa' not in x['href'] and 'edito' not in x['href'] and 
-                    'correo' not in x['href'] and 'capital' not in x['href'] and 
-                    'cartones' not in x['href'] and 'fotografia' not in x['href']
-                    and 'opinion' not in x['href'] and 'gastronomia' not in x['href']
-                    and 'espectaculos' not in x['href'] and 'deportes' not in x['href']]
+            pattern = r'(\w*\.\w*\?\w*=)([a-z]+)'
+            rel_links_menu = []
+            rel_links_menu = []
 
-        pattern = r'(\w*\.\w*\?\w*=)([a-z]+)'
-        rel_links_menu = []
-        rel_links_menu = []
+            for r in rel_links:
+                rel = re.findall(pattern, r)
 
-        for r in rel_links:
-            rel = re.findall(pattern, r)
+                if len(rel)>0 and (rel[0][1], main_url + r) not in rel_links_menu:
+                    rel_links_menu.append((rel[0][1], main_url + r))
 
-            if len(rel)>0 and (rel[0][1], main_url + r) not in rel_links_menu:
-                rel_links_menu.append((rel[0][1], main_url + r))
-
-        return rel_links_menu
+            return rel_links_menu
+        else:
+            return None
 
     #La Jornada section format between 2010 and 2016    
     elif any(x for x in years10_17 if x in main_url) and 'jornada' in main_url:
 
-        tag_list = soup.find_all(tag_type, class_ = class_type)[0]
-        rel_links = tag_list.find_all('a')
-        pattern = r'(?<=/)[a-z]+'
-        rel_links_menu = []
+        tag_list = soup.find_all(tag_type, class_ = class_type)
 
-        for r in rel_links:
-            rel = re.findall(pattern, r['href'])
-            if len(rel)>0 and (rel[0], main_url + rel[0]) not in rel_links_menu:
-                if rel[0] in visit:
-                    rel_links_menu.append((rel[0], main_url + rel[0]))
+        if tag_list:
+            rel_links = tag_list[0].find_all('a')
+            pattern = r'(?<=/)[a-z]+'
+            rel_links_menu = []
 
-        return rel_links_menu
+            for r in rel_links:
+                rel = re.findall(pattern, r['href'])
+                if len(rel)>0 and (rel[0], main_url + rel[0]) not in rel_links_menu:
+                    if rel[0] in visit:
+                        rel_links_menu.append((rel[0], main_url + rel[0]))
 
+            return rel_links_menu
+        else:
+            return None
 
     #La Jornada section format between 2017, LATimes section format
     tag_list = soup.find_all(tag_type, class_= class_type)
+    if tag_list:
+        rel_links_menu = []
+        for t in tag_list: 
+            pattern = r'(?<=/)[a-z]+'
+            rel = re.findall(pattern, t.a['href'])
 
-    rel_links_menu = []
-    for t in tag_list: 
-        pattern = r'(?<=/)[a-z]+'
-        rel = re.findall(pattern, t.a['href'])
+            if main_url == "www.latimes.com":
+                if len(rel)>0 and (rel[0], main_url + '/' + rel[0]) not in rel_links_menu:
+                    rel_links_menu.append((rel[1],main_url + '/'+rel[1]))
+            elif len(rel)>1 and (rel[1], main_url + '/' + rel[1]) not in rel_links_menu:
+                if rel[1] in visit:
+                    rel_links_menu.append((rel[1],main_url + '/'+rel[1]))
 
-        if main_url == "www.latimes.com":
-            if len(rel)>0 and (rel[0], main_url + '/' + rel[0]) not in rel_links_menu:
-                rel_links_menu.append((rel[1],main_url + '/'+rel[1]))
-        elif len(rel)>1 and (rel[1], main_url + '/' + rel[1]) not in rel_links_menu:
-            if rel[1] in visit:
-                rel_links_menu.append((rel[1],main_url + '/'+rel[1]))
-
-    return rel_links_menu
+        return rel_links_menu
+    else:
+        return None
 
 
 #propublica tag_type = 'div'
@@ -170,8 +178,8 @@ def get_articles_pro(complement):
     soup = bs4.BeautifulSoup(html, 'lxml')
     tag_list = soup.find_all('div', class_ = 'excerpt-thumb')
 
-    if tag_list[0]:
-        for index,tag in enumerate(tag_list):
+    if tag_list:
+        for index,tag in enumerate(tag_list[0]):
             rv= {}
             articles[index] = rv
             article = tag.a['href']
@@ -315,8 +323,9 @@ def get_info(dictionary):
 
 def helper_funciton(main_url, stag_type,sclass_type, atag_type, aclass_type):
     sections_list = get_sections(main_url, stag_type, sclass_type)
-    articles = get_articles(sections_list, atag_type, aclass_type, main_url)
-    return get_info(articles)
+    if sections_list:
+        articles = get_articles(sections_list, atag_type, aclass_type, main_url)
+        return get_info(articles)
 
 def master_function(complement):
     '''
@@ -334,34 +343,41 @@ def master_function(complement):
         #sections_list = get_sections(main_url, 'a', 'visualIconPadding')
         #articles = get_articles(sections_list, 'div', 'article_list', main_url)
         info_dictionary = helper_funciton(main_url,'a','visualIconPadding', 'div','article_list')
-        write_csv(info_dictionary, 'jornada_'+ re.sub("/", "_", complement) +'.csv')
-        return info_dictionary
+        if info_dictionary:
+            write_csv(info_dictionary, 'jornada_'+ re.sub("/", "_", complement) +'.csv')
+            return info_dictionary
 
     elif any(x for x in years10_17 if x in complement): # and 'jornada' in main:
         #sections_list = get_sections(main_url, 'div', 'main-sections gui')
         #articles = get_articles(sections_list, 'a', 'cabeza', main_url)
         #info_dictionary = get_info(articles)
         info_dictionary = helper_funciton(main_url,'div','main-sections gui', 'a','cabeza')
-        write_csv(info_dictionary, 'jornada_'+ re.sub("/", "_", complement) +'.csv')
-        return info_dictionary
+        if info_dictionary:
+            write_csv(info_dictionary, 'jornada_'+ re.sub("/", "_", complement) +'.csv')
+            return info_dictionary
 
     else:
         #sections_list = get_sections(main_url, 'li', 'fixed-menu-p')
         #articles = get_articles(sections_list, 'h4')
         info_dictionary = helper_funciton(main_url,'li','fixed-menu-p', 'h4', None)
-        write_csv(info_dictionary, 'jornada_'+ re.sub("/", "_", complement) +'.csv')
-        return info_dictionary
+        if info_dictionary:
+            write_csv(info_dictionary, 'jornada_'+ re.sub("/", "_", complement) +'.csv')
+            return info_dictionary
 
 def downloader(start_date, end_date):
     '''
     Inputs:
-        start_date (YYYY, M, D)
-        end_date (YYYY, M, D)
+        start_date "YYYY/MM/DD" (string)
+        end_date "YYYY/MM/DD" (string)
 
     Outputs:
         csv_file (articles per day for the date range)
     '''
-    date_range = create_date_range(start_date, end_date)
+    date1 = start_date.split("/")
+    y1, m1, d1 = (int(x) for x in date1)
+    date2 = end_date.split("/")
+    y2, m2, d2 = (int(x) for x in date2)
+    date_range = create_date_range((y1, m1, d1), (y2, m2, d2))
 
     for day in date_range:
         master_function(day)
@@ -385,15 +401,15 @@ def write_csv_pro(dictionary, filename):
             #for i in dictionary[key]:
             writer.writerow(value)
 
-if __name__ == "__main__":
-    # process arguments
+# if __name__ == "__main__":
+#     # process arguments
 
-    if len(sys.argv) == 2:
-        start_date = sys.argv[0]
-        end_date = sys.argv[1]
-    else:
-        s = "usage: python3 <start_date tuple> <end_date tuple>"
-        print(s)
-        sys.exit(0)
+#     if len(sys.argv) == 2:
+#         start_date = sys.argv[0]
+#         end_date = sys.argv[1]
+#     else:
+#         s = "usage: python3 <start_date tuple> <end_date tuple>"
+#         print(s)
+#         sys.exit(0)
 
-    downloader(start_date, end_date)
+#     downloader(start_date, end_date)
