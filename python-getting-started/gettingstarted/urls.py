@@ -1,9 +1,9 @@
 from django.conf.urls import include, url
-
+#from . import newsapp
 from django.contrib import admin
 admin.autodiscover()
 
-import newsapp.views
+#from . import newsapp.views
 
 # Examples:
 # url(r'^$', 'gettingstarted.views.home', name='home'),
@@ -11,6 +11,6 @@ import newsapp.views
 #app_name = 'newsapp'
 
 urlpatterns = [
-    url(r'^basic_piazza/', include('basic_piazza.urls')),
-    url(r'^admin/', admin.site.urls),
+    url(r'^', include('newsapp.urls')),
+    url(r'^admin/', admin.site.urls)
 ]

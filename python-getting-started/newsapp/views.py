@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 import datetime
-from scripts.forms import UserInput
+from scripts.form import UserInput
 # Create your views here.
 
 def search_news(request):
@@ -17,9 +17,9 @@ def search_news(request):
         form = UserInput(request.POST, initial= data)
         if form.is_valid():
             HttpResponse('Thank you we are processing your request')
-        else:
-            form = UserInput()
-    return render(request,'newsapp/templates/ssearch.html',{'form': form})
+    else:
+        form = UserInput()
+    return render(request,'search.html',{'form': form})
 
 def results(request):
 
@@ -79,12 +79,12 @@ def index(request):
         form = UserInput(request.POST, initial= data)
         if form.is_valid():
             HttpResponse('Thank you we are processing your request')
-        else:
-            form = UserInput()
+    else:
+        form = UserInput()
     #r = requests.get('http://httpbin.org/status/418')
     #print (r.text)
 
-    return render(request,'newsapp/templates/index.html',{'form': form})
+    return render(request,'index.html',{'form': form})
 
 def db(request):
 
