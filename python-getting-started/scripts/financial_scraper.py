@@ -21,14 +21,22 @@ def get_historical_stock(start_date, end_date, ticker):
 	Output:
 		close_dict (dict): dict of dates mapped to adjusted closing prices
 	'''
+	date_series = pd.date_range(start_date, end_date, freq="D")
+	date_range = pd.Series(date_series.format())
+
 	stock = Share(ticker)
-	lst = stock.get_historical(start_date, end_date)
+	value_list = stock.get_historical(start_date, end_date)
 
-	close_dict = {}
-	for dic in lst:
-		close_dict[dic["Date"]] = dic["Adj_Close"]
+	historical_dict = {}
+	for day in date_range:
+		historical_dict[day] = 0
+	for value in value_list:
+		historical_dict[value["Date"]] = value["Adj_Close"]
 
-	return close_dict
+	df = pd.DataFrame.from_dict(historical_dict, orient = "index")
+	df = df[0].replace(to_replace = 0, method = "ffill")
+	
+	return df.to_dict()
 
 def get_exchange_rate(date, home, foreign):
 	'''
@@ -68,13 +76,18 @@ def get_historical_currency(start_date, end_date, home, foreign):
 	date_range = pd.Series(date_series.format())
 
 	historical_dict = {}
+	for day in date_range:
+		historical_dict[day] = 0
 	for i in range(len(date_range)):
 		val = get_exchange_rate(date_range[i], home, foreign)
 		if val:
 			historical_dict[date_range[i]] = float(val)
 
-	return historical_dict
-
+	df = pd.DataFrame.from_dict(historical_dict, orient = "index")
+	df = df[0].replace(to_replace = 0, method = "ffill")
+	
+	return df.to_dict()
+	
 def dict_to_csv(in_dict, filename):
 	'''
 	Given a dictionary and output filename, write the dictionary into a csv file.
