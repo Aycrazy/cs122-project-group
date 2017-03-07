@@ -169,6 +169,7 @@ def get_articles_pro(complement):
     html = pm.urlopen(url= archive_url, method="GET").data
     soup = bs4.BeautifulSoup(html, 'lxml')
     tag_list = soup.find_all('div', class_ = 'excerpt-thumb')
+
     if tag_list[0]:
         for index,tag in enumerate(tag_list):
             rv= {}
@@ -190,6 +191,7 @@ def get_articles_pro(complement):
                 rv['source'] = 'ProPublica'
 
         write_csv_pro(articles, 'propublica_'+ re.sub("/", "_", complement) +'.csv')
+
 
     return articles
 
