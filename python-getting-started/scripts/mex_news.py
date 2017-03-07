@@ -14,6 +14,8 @@ import pandas as pd
 from newspaper.configuration import Configuration
 from datetime import date, timedelta as td
 import csv
+from get_compound_scores import *
+import mtranslate
 
 # create_data_range ref from http://stackoverflow.com/questions/7274267/print-all-day-dates-between-two-dates
 
@@ -184,7 +186,7 @@ def get_articles_pro(complement):
                 text = article_object.text
                 rv['article'] = title
                 rv['pub_date'] = complement
-                rv['nltk_score'] = text
+                rv['nltk_score'] = get_nltk_score(text)
                 rv['source'] = 'ProPublica'
 
         write_csv_pro(articles, 'propublica_'+ re.sub("/", "_", complement) +'.csv')
@@ -289,14 +291,17 @@ def get_info(dictionary):
                 article.parse()
                 count = count + 1
                 title = article.title
-                print(title, key, count)
+                tr_title = mtranslate.translate(title, "en", "auto")
+                #print(title, key, count)
                 date = article.publish_date.date()
                 text = article.text
+                tr_text = translate_article(text)
                 #if key not in rv:
                 irv['article'] = title
                 irv['pub_date'] = date
-                irv['nltk_score'] = text #will be converted into sentiment score
+                irv['nltk_score'] = get_nltk_score(tr_text) #will be converted into sentiment score
                 irv['source'] = 'Jornada'
+                irv['nltk_score_title'] = get_nltk_score(tr_title)
                 #rv[key].append((title, date, text))
     return rv
 
@@ -346,7 +351,7 @@ def master_function(complement):
 
 def write_csv(dictionary, filename):
     with open(filename, 'w') as csv_file:
-        fieldnames = ['article','pub_date','nltk_score','source' ]
+        fieldnames = ['article','pub_date','nltk_score','source', 'nltk_score_title']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)#delimiter='|')
         writer.writeheader()
         for key, value in dictionary.items():
