@@ -384,3 +384,16 @@ def write_csv_pro(dictionary, filename):
         for value in dictionary.values():
             #for i in dictionary[key]:
             writer.writerow(value)
+
+if __name__ == "__main__":
+    # process arguments
+
+    if len(sys.argv) == 2:
+        start_date = sys.argv[0]
+        end_date = sys.argv[1]
+    else:
+        s = "usage: python3 <start_date tuple> <end_date tuple>"
+        print(s)
+        sys.exit(0)
+
+    downloader(start_date, end_date)
