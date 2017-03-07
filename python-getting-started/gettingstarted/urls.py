@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'^index', newsapp.views.index, name='index'),
     url(r'^db', newsapp.views.db, name='db'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^search_news_sentiment/$', newsapp.views.search_news_sentiment, name='search_news_sentiment')
+    url(r'^search',newsapp.views.search_news, name ='search'),
+    url(r'^results', newsapp.views.results, name='results')
 ]
