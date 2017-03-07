@@ -170,6 +170,7 @@ def get_sections(main_url, tag_type, class_type):
 def get_articles_pro(complement):
     '''
     '''
+    print(complement,'pro')
     propublica = 'https://www.propublica.org/archive/'
     archive_url = propublica +complement+'/'
     articles = {}
@@ -179,7 +180,7 @@ def get_articles_pro(complement):
     tag_list = soup.find_all('div', class_ = 'excerpt-thumb')
 
     if tag_list:
-        for index,tag in enumerate(tag_list[0]):
+        for index,tag in enumerate(tag_list):
             rv= {}
             articles[index] = rv
             article = tag.a['href']
@@ -339,6 +340,7 @@ def master_function(complement):
     main_url = jornada+complement+'/'
     #print(main_url)
 
+    print(complement,'jornada')
     if any(x for x in years07_09 if x in complement): # and 'jornada' in main:
         #sections_list = get_sections(main_url, 'a', 'visualIconPadding')
         #articles = get_articles(sections_list, 'div', 'article_list', main_url)
