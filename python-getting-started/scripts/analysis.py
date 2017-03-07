@@ -51,7 +51,8 @@ def scatter_plot(data, save_to = None):
             file with the plot
     '''
     colors = np.random.rand(len(dt))
-    area = np.pi * (15 * np.array([0.6]*len(dt)))**2  # 0 to 15 point radii
+    area = np.pi * (15 * np.array([0.6]
+    *len(dt)))**2  # 0 to 15 point radii
     f = plt.figure()
     plt.scatter(data.findata, data.scores_text, s=area, c=colors, alpha=0.5)
     plt.grid(True)
@@ -111,7 +112,7 @@ def histo_plot(data, save_to = None):
             It can only show the plot or save a 
             file with the plot
     '''
-    data.hist(layout=(1,2)) 
+    data.hist(layout=(1,3)) 
 
     if save_to == None:
 
@@ -157,3 +158,53 @@ def time_series(data, save_to = None):
 
     else:
         f.savefig(save_to)
+
+
+def get_plots(data, save_to = None):
+
+    # Inputs for scatter plots
+    colors = np.random.rand(len(dt))
+    area = np.pi * (15 * np.array([0.6]*len(dt)))**2  # 0 to 15 point radii
+    plt.scatter(data.scores_title, data.scores_text, s=area, c=colors, alpha=0.5)
+    # Linear fit for nltk comparison scores
+    x = np.array(data.scores_text)
+    y = np.array(data.scores_title)
+    m, b = np.polyfit(x, y, 1)
+    # Fontsize
+    num = 12
+    # Number of bins for nltk histograms
+    bins = np.linspace(-3, 3, 100)
+
+    #Create subplots
+    f, axarr = plt.subplots(2, 2)
+
+    axarr[0,0].scatter(data.findata, data.scores_text, s=area, c=colors, alpha=0.5)
+    axarr[0,0].grid()
+    axarr[0,0].set_title('Scatter plot financial data vs. nltk text', fontsize = num)
+    axarr[0,1].scatter(data.scores_title, data.scores_text, s=area, c=colors, alpha=0.5)
+    axarr[0,1].plot(x, m*x + b, '-')
+    axarr[0,1].grid()
+    axarr[0,1].set_title('Scatter plot nltk title vs. text', fontsize = num)
+    axarr[1,0].hist(data.scores_title, bins, alpha=0.5, label= "title")
+    axarr[1,0].hist(data.scores_text, bins, alpha=0.5, label= "text")
+    axarr[1,0].legend(loc='upper right')
+    axarr[1,0].grid()
+    axarr[1,0].set_title('Nltk Histograms title vs. text', fontsize = num)
+    axarr[1,1].plot(data.scores_text)
+    ax2 = axarr[1,1].twinx()
+    ax2.plot(data.findata, color="g")
+    axarr[1,1].grid()
+    axarr[1,1].set_title('Time series financial data vs. nltk text', fontsize = num)
+    f.tight_layout()
+
+
+
+    if save_to == None:
+
+        f.show()
+
+    else:
+        f.savefig(save_to)
+
+
+ 
