@@ -9,8 +9,10 @@ import newsapp.views
 # url(r'^$', 'gettingstarted.views.home', name='home'),
 # url(r'^blog/', include('blog.urls')),
 #app_name = 'newsapp'
-
 urlpatterns = [
-    url(r'^basic_piazza/', include('basic_piazza.urls')),
-    url(r'^admin/', admin.site.urls),
+    url(r'^index', newsapp.views.index, name='index'),
+    url(r'^db', newsapp.views.db, name='db'),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^search',views.search, name ='search')),
+    url(r'^results', views.results, name='results'))
 ]
