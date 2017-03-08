@@ -36,7 +36,11 @@ def get_historical_stock(start_date, end_date, ticker):
 	df = pd.DataFrame.from_dict(historical_dict, orient = "index")
 	df = df[0].replace(to_replace = 0, method = "ffill")
 	
-	return df.to_dict()
+	dict_for_sql = {}
+	for k, v in df.to_dict().items():
+		dict_for_sql[k] = (v, ticker)
+
+	return dict_for_sql
 
 def get_exchange_rate(date, home, foreign):
 	'''
@@ -86,9 +90,13 @@ def get_historical_currency(start_date, end_date, home, foreign):
 	df = pd.DataFrame.from_dict(historical_dict, orient = "index")
 	df = df[0].replace(to_replace = 0, method = "ffill")
 	
-	return df.to_dict()
+	dict_for_sql = {}
+	for k, v in df.to_dict().items():
+		dict_for_sql[k] = (v, foreign)
+
+	return dict_for_sql
 	
-def dict_to_csv(in_dict, filename):
+def stock_dict_to_csv(in_dict, filename):
 	'''
 	Given a dictionary and output filename, write the dictionary into a csv file.
 
@@ -100,12 +108,39 @@ def dict_to_csv(in_dict, filename):
         CSV file
 	'''
 	with open(filename, 'w') as csv_file:
-		writer = csv.writer(csv_file, delimiter = ",")
-		for key, val in sorted(in_dict.items()):
-			writer.writerow([key, val])
+		fieldnames = ["date", "adj_close_price", "ticker"]
+		writer = csv.writer(csv_file)
+		writer.writerow(fieldnames)
+		for key, value in sorted(in_dict.items()):
+			writer.writerow([key, value[0], value[1]])
 
+def currency_dict_to_csv(in_dict, filename):
+	'''
+	Given a dictionary and output filename, write the dictionary into a csv file.
 
+    Inputs:
+        in_dict (dictionary)
+        filename (string)
 
+    Output:
+        CSV file
+    '''
+	with open(filename, 'w') as csv_file:
+		fieldnames = ["date", "exchange_rate", "peso"]
+		writer = csv.writer(csv_file)
+		writer.writerow(fieldnames)
+		for key, value in sorted(in_dict.items()):
+			writer.writerow([key, value[0], value[1]])
 
+if __name__ == "__main__":
+	
+	start_date = "2008-04-01"
+	end_date = "2013-04-01"
 
+	tickers = ["^IXIC", "F", "BA", "^MXX"]
+	files = ["nasdaq_ticker.csv", "ford_ticker.csv", "boeing_ticker.csv", "ipc_ticker.csv"]
+
+	for i in range(len(tickers)):
+		d = get_historical_stock(start_date, end_date, tickers[i])
+		stock_dict_to_csv(d, files[i])
 
