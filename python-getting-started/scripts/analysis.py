@@ -185,18 +185,21 @@ def get_plots(data, save_to = None):
     m, b = np.polyfit(x, y, 1)
     # Fontsize
     num = 12
-    # Number of bins for nltk histograms
-    
+    # Correlations
+    corr1 = data.scores_text.corr(data.findata)
+    corr2 = data.scores_text.corr(data.scores_title)
     #Create subplots
     f, axarr = plt.subplots(2, 2)
 
-    axarr[0,0].scatter(data.findata, data.scores_text, s=area, c=colors, alpha=0.5)
+    axarr[0,0].scatter(data.findata, data.scores_text, s=area, c=colors, alpha=0.5, label= '{0:.3g}'.format(corr1))
+    axarr[0,0].legend(loc='upper right')
     axarr[0,0].grid()
     axarr[0,0].set_title('Scatter plot financial data vs. nltk text', fontsize = num)
     axarr[0,0].set_xlabel('indicator units')
     axarr[0,0].set_ylabel('text score')
     # Comparison scatterplot
-    axarr[0,1].scatter(data.scores_title, data.scores_text, s=area, c=colors, alpha=0.5)
+    axarr[0,1].scatter(data.scores_title, data.scores_text, s=area, c=colors, alpha=0.5, label= '{0:.3g}'.format(corr2))
+    axarr[0,1].legend(loc='upper right')
     axarr[0,1].plot(x, m*x + b, '-')
     axarr[0,1].grid()
     axarr[0,1].set_title('Scatter plot nltk title vs. text', fontsize = num)
