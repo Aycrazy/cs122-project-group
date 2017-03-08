@@ -2,10 +2,16 @@ from datetime import date, timedelta
 import pandas as pd
 import random
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
+import matplotlib
+from io import BytesIO
+from PIL import Image
+from time import sleep
+from random import randint
+
 import numpy as np
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+#from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import django
+#from PIL import image
 
 startdate = date(int("2010"), int("01"), int("02"))
 dt = []
@@ -95,7 +101,7 @@ def scatter_plot_comparison(data, save_to = None):
     plt.grid(True)
 
     if save_to == None:
-
+        plt.savefig('gettingstarted/static/test.png')
         plt.show()
 
     else:
@@ -201,16 +207,15 @@ def get_plots(data, save_to = None):
     axarr[1,1].grid()
     axarr[1,1].set_title('Time series financial data vs. nltk text', fontsize = num)
     axarr[1,1].tick_params(axis='x', labelsize=8, width =2)
-    f.tight_layout()
+    #f.tight_layout()
 
 
 
     if save_to == None:
-
-        canvas = FigureCanvas(f)
-        response=django.http.HttpResponse(content_type='image/png')
-        return response
-        #f.show()
+        
+        #sleep(randint(5,8))
+        f.savefig('gettingstarted/static/test.png')
+        
 
     else:
         f.savefig(save_to)

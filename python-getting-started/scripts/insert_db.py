@@ -9,11 +9,9 @@ import manage
 import datetime
 
 def get_date_ints(article_date):
-    date_ints= None
     pattern = r'(?<=0)\d|\d{4}|[^/0]\d*'
-    for article_date in article_dates:
     date_ints = re.findall(pattern, article_date)
-    print(date_ints)
+    #print(date_ints)
     y,m,d = date_ints
     return datetime.date(int(y),int(m),int(d))
 
@@ -33,12 +31,18 @@ def run():
                         date = row[1]
                     print('date_correct ran')
                     article = Article(title=row[0],pub_date=date,\
-                        nltk_score=.02,source = row[3])
+                        nltk_score=row[2], nltk_score_text = row[3], source = row[4])
                     print('should be created')
                     article.save()
-                elif 'ticker' in file:
-                    reader = csv.reader(csvfile)
-                    next(reader, None)
-                    for row in reader:
-                        ticker = Ticker()
-
+            elif 'stock' in file:
+                reader = csv.reader(csvfile)
+                next(reader, None)
+                for row in reader:
+                    ticker = Ticker(date=row[0],close=row[1],ticker=row[2])
+                ticker.save()
+            elif 'currency' in file:
+                reader = csv.reader(csvfile)
+                next(reader,None)
+                for row in reader:
+                    currency = Currency(date=row[0],exchange_rate=row[1],peso=row[2])
+                currency.save()
