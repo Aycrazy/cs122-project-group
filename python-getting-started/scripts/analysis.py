@@ -193,11 +193,12 @@ def get_plots(data, save_to = None):
     axarr[1,0].legend(loc='upper right')
     axarr[1,0].grid()
     axarr[1,0].set_title('Nltk Histograms title vs. text', fontsize = num)
-    axarr[1,1].plot(data.scores_text)
+    axarr[1,1].plot(data.time, data.scores_text)
     ax2 = axarr[1,1].twinx()
-    ax2.plot(data.findata, color="g")
+    ax2.plot(data.time, data.findata, color="g")
     axarr[1,1].grid()
     axarr[1,1].set_title('Time series financial data vs. nltk text', fontsize = num)
+    axarr[1,1].tick_params(axis='x', labelsize=8, width =2)
     f.tight_layout()
 
 
@@ -208,6 +209,3 @@ def get_plots(data, save_to = None):
 
     else:
         f.savefig(save_to)
-
-
- 
