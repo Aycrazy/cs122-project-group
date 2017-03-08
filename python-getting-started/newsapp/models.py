@@ -25,6 +25,6 @@ class Ticker(models.Model):
 class Currency(models.Model):
     date = models.DateField('date_published')
     currency = models.FloatField(default=0)
-    country = models.TextField()
+    peso = models.TextField()
 
     
