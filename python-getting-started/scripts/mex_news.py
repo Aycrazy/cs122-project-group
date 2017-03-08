@@ -21,8 +21,8 @@ import sys
 # create_data_range ref from http://stackoverflow.com/questions/7274267/print-all-day-dates-between-two-dates
 
 #main_url = "http://www.jornada.unam.mx/ultimas"
-years07_09 = ['2007', '2008', '2009']
-years10_17 = ['2010', '2011', '2012', '2013', '2014', '2015', '2016','2017']
+years07_09 = ['2007', '2008']
+years10_17 = ['2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016','2017']
 visit = ['politica', 'economia', 'estados', 'sociedad', 'mundo', 'ciencias',
         'cultura']
 
@@ -309,7 +309,7 @@ def get_info(dictionary):
                 text = article.text
                 tr_text = translate_article(text)
                 #if key not in rv:
-                irv['article'] = title
+                irv['article'] = tr_title
                 irv['pub_date'] = date
                 irv['nltk_score'] = get_nltk_score(tr_text) #will be converted into sentiment score
                 irv['source'] = 'Jornada'
