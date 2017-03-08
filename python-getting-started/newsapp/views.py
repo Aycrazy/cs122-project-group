@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from datetime import date, timedelta
 from scripts.form import UserInput
+from scripts.translate.py
 import pandas as pd
 import numpy as np
 import random
