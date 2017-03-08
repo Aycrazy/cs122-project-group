@@ -33,12 +33,18 @@ def run():
                         date = row[1]
                     print('date_correct ran')
                     article = Article(title=row[0],pub_date=date,\
-                        nltk_score=.02,source = row[3])
+                        nltk_score=row[2], nltk_score_text = row[3], source = row[4])
                     print('should be created')
                     article.save()
                 elif 'ticker' in file:
                     reader = csv.reader(csvfile)
                     next(reader, None)
                     for row in reader:
-                        ticker = Ticker()
+                        ticker = Ticker(date=row[0],close=row[1],ticker=row[2])
+                    ticker.save()
+                else:
+                    reader = csv.reader(csvfile)
+                    next(reader,None)
+                    for row in reader:
+                        currency = Currency(date=row[0],exchange_rate=row[1],peso=row[2])
 
