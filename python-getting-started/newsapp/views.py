@@ -8,10 +8,11 @@ from .models import Article, Ticker, Currency
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-import datetime
+from datetime import date, timedelta
 from scripts.form import UserInput
 import pandas as pd
-
+import numpy as np
+import random
 # Create your views here.
 
 def search_news(request):
@@ -25,6 +26,7 @@ def search_news(request):
     return render(request,'search.html',{'form': form})
 
 def results_png(dt,scores_text,scores_title,findata):
+
     df = create_df(dt,scores_text,scores_title,findata)
 
     response = get_plots(df)
@@ -53,13 +55,14 @@ def results(request):
         if form.is_valid():
             
             args = True
+
             findata=[]
             if form.stock_or_currency == 'stock':
-                #stocks = Ticker.objects.filter(ticker=form.ticker, date__range(form.start_date,form.end_date))
+                stocks = Ticker.objects.filter(ticker=form.ticker, date__range=(form.start_date,form.end_date))
                 for stock in stocks:
                     findata.append(stock.close)
             else:
-                #home_rates = Currency.objects.filter(country=form.home, date__range(form.start_date,form.end_date))
+                home_rates = Currency.objects.filter(country=form.home, date__range=(form.start_date,form.end_date))
                 for hr in home_rates:
                     findata.append(hr.currency)
 
@@ -89,7 +92,7 @@ def results(request):
         form= UserInput()
 
     return render(request,'results.html')
-
+'''
 def index(request):
     if request.method == 'POST':
         # Create a form instance and populate it with data from the request (binding):
@@ -106,3 +109,4 @@ def index(request):
 def db(request):
 
     return render(request, 'db.html')
+'''
