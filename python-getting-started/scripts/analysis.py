@@ -15,28 +15,31 @@ scores_text = [np.random.normal(0, 1) for i in range(len(dt))]
 scores_title = [np.random.normal(0, 1) for i in range(len(dt))]
 findata = [random.uniform(100, 300) for i in range(len(dt))]
 
-d = {'scores_text': pd.Series(scores_text),
-     'scores_title': pd.Series(scores_title),
-     'findata': pd.Series(findata),
-     'time': pd.Series(dt)}
+def create_df(date,scores_text,scores_title,findata):
 
+    d = {'scores_text': pd.Series(scores_text),
+         'scores_title': pd.Series(scores_title),
+         'findata': pd.Series(findata),
+         'time': pd.Series(dt)}
 
+    df = pd.DataFrame(d)
 
+    df = df.set_index(pd.to_datetime(dt))
 
-df = pd.DataFrame(d)
+    return df
 
-df = df.set_index(pd.to_datetime(dt))
+def describe(df):
+    #Descriptive Statistics
 
-#Descriptive Statistics
+    df.describe()
+     
+    # Correlation for the time period
 
-df.describe()
- 
-# Correlation for the time period
+    df.scores_text.corr(df.findata)
 
-df.scores_text.corr(df.findata)
+    df.scores_title.corr(df.findata)
 
-df.scores_title.corr(df.findata)
-
+    
 # Scatter
 
 def scatter_plot(data, save_to = None):
