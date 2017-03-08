@@ -11,7 +11,7 @@ import datetime
 def get_date_ints(article_date):
     date_ints= None
     pattern = r'(?<=0)\d|\d{4}|[^/0]\d*'
-    #for article_date in article_dates:
+    for article_date in article_dates:
     date_ints = re.findall(pattern, article_date)
     print(date_ints)
     y,m,d = date_ints
@@ -19,22 +19,26 @@ def get_date_ints(article_date):
 
 
 def run():
-    #os.chdir("scripts")
-    print(os.getcwd())
+
+    os.chdir("scripts")
     for file in glob.glob("*.csv"):
-        print(file)
-        with open(file, 'r') as csvfile:
-            print('hello')
-            reader = csv.reader(csvfile)
-            next(reader,None)
-            print('hellos')
-            for row in reader:
-                if 'propublica' in file:
-                    date = get_date_ints(row[1])
-                else:
-                    date = row[1]
-                print('date_correct ran')
-                article = Article(title=row[0],pub_date=date,\
-                    nltk_score=.02,source = row[3])
-                print('should be created')
-                article.save()
+        with open(file, 'r') as csvfile:    
+            if 'jornada' in file or 'propublica' in file:
+                reader = csv.reader(csvfile)
+                next(reader,None)
+                for row in reader:
+                    if 'propublica' in file:
+                        date = get_date_ints(row[1])
+                    else:
+                        date = row[1]
+                    print('date_correct ran')
+                    article = Article(title=row[0],pub_date=date,\
+                        nltk_score=.02,source = row[3])
+                    print('should be created')
+                    article.save()
+                elif 'ticker' in file:
+                    reader = csv.reader(csvfile)
+                    next(reader, None)
+                    for row in reader:
+                        ticker = Ticker()
+
