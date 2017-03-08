@@ -47,4 +47,4 @@ def run():
                     next(reader,None)
                     for row in reader:
                         currency = Currency(date=row[0],exchange_rate=row[1],peso=row[2])
-
+                    currenc.save()
