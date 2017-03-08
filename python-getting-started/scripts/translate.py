@@ -13,7 +13,7 @@ def translate_keywords(text_from_ui):
 	Output: 
 	'''
 	try:
-		return mtranslate.translate(text_from_ui, "es", "en")
+		return mtranslate.translate(text_from_ui, "en", "auto")
 
 	except:
 		print("Google Translate has failed us.")
