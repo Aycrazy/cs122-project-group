@@ -193,22 +193,31 @@ def get_plots(data, save_to = None):
     axarr[0,0].scatter(data.findata, data.scores_text, s=area, c=colors, alpha=0.5)
     axarr[0,0].grid()
     axarr[0,0].set_title('Scatter plot financial data vs. nltk text', fontsize = num)
+    axarr[0,0].set_xlabel('indicator units')
+    axarr[0,0].set_ylabel('text score')
+    # Comparison scatterplot
     axarr[0,1].scatter(data.scores_title, data.scores_text, s=area, c=colors, alpha=0.5)
     axarr[0,1].plot(x, m*x + b, '-')
     axarr[0,1].grid()
     axarr[0,1].set_title('Scatter plot nltk title vs. text', fontsize = num)
-    axarr[0,1].tick_params(axis='x',labelsize=5,width=2)
+    #axarr[0,1].tick_params(axis='x',labelsize=5,width=2)
+    axarr[0,1].set_xlabel('title')
+    axarr[0,1].set_ylabel('text')
+    # Histograms
     axarr[1,0].hist(data.scores_title.dropna(), alpha=0.5, label= "title")
     axarr[1,0].hist(data.scores_text.dropna(), alpha=0.5, label= "text")
     axarr[1,0].legend(loc='upper right')
     axarr[1,0].grid()
-    axarr[1,0].set_title('Nltk Histograms title vs. text', fontsize = num)
+    axarr[1,0].set_title('Nltk Histograms title and text', fontsize = num)
+    # Time series subplot
     axarr[1,1].plot(data.date, data.scores_text)
     ax2 = axarr[1,1].twinx()
     ax2.plot(data.date, data.findata, color="g")
     axarr[1,1].grid()
-    axarr[1,1].set_title('Time series financial data vs. nltk text', fontsize = num)
+    axarr[1,1].set_title('Time series nltk text vs. financial data', fontsize = num)
     axarr[1,1].tick_params(axis='x', labelsize=5, width =2)
+    axarr[1,1].set_ylabel('text score')
+    ax2.set_ylabel('indicator units')
     f.tight_layout()
 
 
@@ -229,6 +238,7 @@ def get_plots(data, save_to = None):
         response['Content-Disposition'] = 'attachment; filename="test.png"'
         '''
         f.savefig('gettingstarted/static/test.png')
+        #f.show()
         #return response
 
     else:
