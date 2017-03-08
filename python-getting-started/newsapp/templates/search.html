@@ -7,12 +7,12 @@
   </div>
 </div>
 <div class="container">
-    <form action="" method="post">
+    <form action="\results\" method="post">
         {% csrf_token %}
         <table>
         {{ form }}
         </table>
-        <input type="submit" value="Submit" href={%url 'results' %}/>
+        <a href="{%url 'results' %}"><input type="submit" value="Submit" /></a>
     </form>
 </div>
 {% endblock %}
