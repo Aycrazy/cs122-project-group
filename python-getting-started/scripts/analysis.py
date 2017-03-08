@@ -3,7 +3,11 @@ import pandas as pd
 import random
 import matplotlib.pyplot as plt
 import matplotlib
-from io import BytesIO
+import django
+
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+#from io import BytesIO
 from PIL import Image
 from time import sleep
 from random import randint
@@ -101,7 +105,7 @@ def scatter_plot_comparison(data, save_to = None):
     plt.grid(True)
 
     if save_to == None:
-        plt.savefig('gettingstarted/static/test.png')
+
         plt.show()
 
     else:
@@ -196,8 +200,8 @@ def get_plots(data, save_to = None):
     axarr[0,1].plot(x, m*x + b, '-')
     axarr[0,1].grid()
     axarr[0,1].set_title('Scatter plot nltk title vs. text', fontsize = num)
-    axarr[1,0].hist(data.scores_title, bins, alpha=0.5, label= "title")
-    axarr[1,0].hist(data.scores_text, bins, alpha=0.5, label= "text")
+    #axarr[1,0].hist(data.scores_title, bins, alpha=0.5, label= "title")
+    #axarr[1,0].hist(data.scores_text, bins, alpha=0.5, label= "text")
     axarr[1,0].legend(loc='upper right')
     axarr[1,0].grid()
     axarr[1,0].set_title('Nltk Histograms title vs. text', fontsize = num)
@@ -213,9 +217,20 @@ def get_plots(data, save_to = None):
 
     if save_to == None:
         
-        #sleep(randint(5,8))
+        sleep(randint(3,5))
+        #f.savefig('gettingstarted/static/test.png')
+        #canvas = FigureCanvas(f)
+        im = Image.new(mode='F',size=(300,200))
+        left = 10
+        top = 10
+        right = 100
+        bottom = 100
+        cropped_image = im.crop( (left, top, right, bottom) )
+        response = django.http.HttpResponse(cropped_image, content_type='image/png')
+        #canvas.print_png(response)
+        response['Content-Disposition'] = 'attachment; filename="test.png"'
         f.savefig('gettingstarted/static/test.png')
-        
+        return response
 
     else:
         f.savefig(save_to)

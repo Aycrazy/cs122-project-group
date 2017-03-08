@@ -18,7 +18,6 @@ def get_date_ints(article_date):
 
 def run():
 
-    os.chdir("scripts")
     for file in glob.glob("*.csv"):
         with open(file, 'r') as csvfile:    
             if 'jornada' in file or 'propublica' in file:
@@ -31,7 +30,7 @@ def run():
                         date = row[1]
                     print('date_correct ran')
                     article = Article(title=row[0],pub_date=date,\
-                        nltk_score=row[2], nltk_score_text = row[3], source = row[4])
+                        nltk_score=row[2], nltk_score_title = row[4], source = row[3])
                     print('should be created')
                     article.save()
             elif 'stock' in file:
@@ -46,3 +45,4 @@ def run():
                 for row in reader:
                     currency = Currency(date=row[0],exchange_rate=row[1],peso=row[2])
                 currency.save()
+        os.remove(file)

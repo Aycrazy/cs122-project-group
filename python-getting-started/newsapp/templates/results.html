@@ -1,13 +1,10 @@
-{% extends "base.html" %}
-{% block content %}
-<body>
-    <div style="margin:15px;,width:full;,height:30px;">
-        <h1 style="color:purple;">Here are your results!</h1>
+{%load staticfiles %}
+<html>
+    <header style="margin: 20px; font-size:24px;color:purple;">Here are your results! </header>
+    <body>
 
-    <!-{%if args %}->
-        {%load staticfiles%}
-        <img src="{%static 'test.png'%}" alt="Image">
-    </div>
-</body>
-<!-{% endif %}
-{% endblock %}
+        {%load static%}
+        <img src="{%static 'test.png' %}" alt="Image">
+
+    </body>
+</html>

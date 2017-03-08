@@ -38,9 +38,9 @@ def results_png(dt,scores_text,scores_title,findata):
 
     df = create_df(dt,scores_text,scores_title,findata)
 
-    response = get_plots(df)
-
-    return response
+    get_plots(df)
+    
+    #return response
 
 def results(request):
 
@@ -65,7 +65,7 @@ def results(request):
 
             args = True
 
-            findata=[]
+            #findata=[]
             start_date = get_date_ints(form.data['start_date'])
             end_date = get_date_ints(form.data['end_date'])
             if form['stock_or_currency'] == 'stock':
@@ -93,11 +93,11 @@ def results(request):
             nltk_scores = []
             nltk_scores_title = []
             for article in articles:
-                dates.append(article.data['pub_date'])
-                nltk_scores.append(article.data['nltk_score'])
-                nltk_scores_title.append(article.data['nltk_score_title'])
+                dates.append(article.pub_date)
+                nltk_scores.append(article.nltk_score)
+                nltk_scores_title.append(article.nltk_score_title)
 
-            results_png(dt,scores_text,scores_title,findata)
+            results_png(dates,nltk_scores,nltk_scores_title,findata[-2:])
 
     else:
         form= UserInput()
