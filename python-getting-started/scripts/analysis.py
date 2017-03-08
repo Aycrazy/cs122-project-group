@@ -4,6 +4,8 @@ import random
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+import django
 
 startdate = date(int("2010"), int("01"), int("02"))
 dt = []
@@ -204,7 +206,10 @@ def get_plots(data, save_to = None):
 
     if save_to == None:
 
-        f.show()
+        canvas = FigureCanvas(f)
+        response=django.http.HttpResponse(content_type='image/png')
+        return response
+        #f.show()
 
     else:
         f.savefig(save_to)
