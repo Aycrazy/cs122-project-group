@@ -13,7 +13,7 @@ class UserInput(forms.Form):
 
     def stock_choice(self):
         if self.stock_or_currency == 'stock':
-            chosen_stock = forms.ChoiceField(choices=(('NASDAQ','^IXIC'),('CRUDE OIL FUTURE','CL*0'),('FORD','F'),('BOEING','BA'),('CHRYSLER','FCAU'),('WESTTEXASINTERMEDIATE','WTI')))
+            chosen_stock = forms.ChoiceField(choices=(('NASDAQ','^IXIC'),('FORD','F'),('BOEING','BA'),('Mexico Price Transaction Index','^MXX')))
             return chosen_stock
 
     def clean_start_date(self):
@@ -24,6 +24,6 @@ class UserInput(forms.Form):
 
     def clean_end_date(self):
         end_data = self.cleaned_data['end_date']
-        if end_data < datetime.date(2013,4,1):
+        if end_data > datetime.date(2013,4,1):
             raise ValidationError(_('Invalid date - beyond current dataset'))
         return end_data

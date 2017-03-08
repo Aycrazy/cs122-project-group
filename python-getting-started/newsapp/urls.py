@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'^index', views.index, name='index'),
     url(r'^db', views.db, name='db'),
     url(r'^search',views.search_news, name ='search'),
-    url(r'^results', views.results, name='results')
+    url(r'^results', views.results, name='results'),
+    url(r'^results_png', views.results_png, name='results_png')
 ]

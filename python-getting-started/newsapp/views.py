@@ -11,7 +11,6 @@ from django.core.urlresolvers import reverse
 import datetime
 from scripts.form import UserInput
 import pandas as pd
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 # Create your views here.
 
@@ -25,7 +24,24 @@ def search_news(request):
         form = UserInput()
     return render(request,'search.html',{'form': form})
 
+def results_png(dt,scores_text,scores_title,findata):
+    df = create_df(dt,scores_text,scores_title,findata)
+
+    response = get_plots(df)
+
+    return response
+
 def results(request):
+
+    startdate = date(int("2010"), int("01"), int("02"))
+    dt = []
+    while startdate < date(int("2010"), int("04"), int("10")):
+        dt.append(startdate)
+        startdate += timedelta(days=1)
+
+    scores_text = [np.random.normal(0, 1) for i in range(len(dt))]
+    scores_title = [np.random.normal(0, 1) for i in range(len(dt))]
+    findata = [random.uniform(100, 300) for i in range(len(dt))]
 
     # If this is a POST request then process the Form data
     if request.method == 'POST':
@@ -67,9 +83,7 @@ def results(request):
                 nltk_scores.append(article.nltk_score)
                 nltk_scores_title.append(article.nltk_score_title)
 
-            df = create_df(dates,nltk_scores,nltk_scores_title,findata)
-
-            get_plots(df)
+            results_png(dt,scores_text,scores_title,findata)
 
     else:
         form= UserInput()

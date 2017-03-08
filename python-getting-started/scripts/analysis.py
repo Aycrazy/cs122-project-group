@@ -209,6 +209,7 @@ def get_plots(data, save_to = None):
 
         canvas = FigureCanvas(f)
         response=django.http.HttpResponse(content_type='image/png')
+        canvas.print_png(response)
         return response
         #f.show()
 
