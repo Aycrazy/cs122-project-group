@@ -1,7 +1,8 @@
 #!/bin/bash
-from newsapp.models import Article #, ArticlesManager
+from newsapp.models import Article, Date
 #from scripts import
 from django.utils import timezone
+from scripts.translate import translate_keywords
 import re
 import glob, os
 import csv
@@ -14,8 +15,7 @@ def get_date_ints(article_date):
     #print(date_ints)
     y,m,d = date_ints
     return datetime.date(int(y),int(m),int(d))
-
-
+  
 def run():
 
     for file in glob.glob("*.csv"):
@@ -25,14 +25,19 @@ def run():
                 next(reader,None)
                 for row in reader:
                     if 'propublica' in file:
-                        date = get_date_ints(row[1])
+                        dj = Date(pk=get_date_ints(row[1]))
                     else:
-                        date = row[1]
+                        dj = Date(pk=row[1])
                     print('date_correct ran')
-                    article = Article(title=row[0],pub_date=date,\
+                   
+                    print(row[2],row[3],row[4])
+                    article = dj.article_set.create(title=translate_keywords(row[0]),\
                         nltk_score=row[2], nltk_score_title = row[4], source = row[3])
+                    #article = Article.objects.create(title=translate_keywords(row[0]),\
+                    #    date = dj, nltk_score=row[2], nltk_score_title = row[4], source = row[3])
+                    
                     print('should be created')
-                    article.save()
+                    #break
             elif 'stock' in file:
                 reader = csv.reader(csvfile)
                 next(reader, None)
@@ -45,4 +50,5 @@ def run():
                 for row in reader:
                     currency = Currency(date=row[0],exchange_rate=row[1],peso=row[2])
                 currency.save()
+        print('test')
         os.remove(file)

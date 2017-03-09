@@ -14,5 +14,5 @@ urlpatterns = [
     #url(r'^db', views.db, name='db'),
     url(r'^search',views.search_news, name ='search'),
     url(r'^results', views.results, name='results'),
-    url(r'^.png$', views.results_png, name='results_png')
+    url(r'^.png$', views.results_png, name='results')
 ]
