@@ -91,22 +91,18 @@ def results(request):
             articles = []
             findata_real = []
             for dobj in dobjs:
-
+                article = Article.objects.filter(date = dobj)
                 if len(form.data['keyword'].split()) > 1:
                     split_keywords = form.data['keyword'].split()
-                    if form.data['home'] == 'Both':
-                        article = Article.objects.filter(date = dobj, title__icontains=split_keywords[0]+" ")
-                    else:
-                        article = Article.objects.filter(date = dobj, title__icontains=split_keywords[0]+" ",source__icontains = paper)
-
+                    article = article.filter(title__icontains=split_keywords[0])
+                    if form.data['home'] != 'Both':
+                        article = article.filter(source__icontains = paper)
                     for word in split_keywords[1:]:
                         #print(article)
-                        article = article.filter(title__icontains=word+" ").select_related()
+                        article = article.filter(title__icontains=word+" ")
                 else:
-                    if form.data['home'] == 'Both':
-                        article = Article.objects.filter(date = dobj, title__icontains=form.data['keyword'][0]+" ")
-                    else:
-                        article = Article.objects.filter(date = dobj, title__icontains=form.data['keyword'][0]+" ",source__icontains = paper)
+
+                    article = article.filter(date = dobj, title__icontains=form.data['keyword']+" ")
                 
                 #print(article)
                 
