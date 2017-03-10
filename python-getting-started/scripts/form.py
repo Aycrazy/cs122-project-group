@@ -8,13 +8,8 @@ class UserInput(forms.Form):
     end_date = forms.DateField(help_text="Enter an end date before 04/01/2013")
     keyword = forms.CharField(help_text="Enter a keyword or phrase in English or Spanish")
     stock_or_currency = forms.ChoiceField(choices=[('stocks','stocks'),('currency','currency')])
-    home = forms.ChoiceField(choices=(('US','United States'),('Mexico','Mexico')))
-    other = forms.ChoiceField(choices=(('US','United States'),('Mexico','Mexico')))
-
-    def stock_choice(self):
-        if self.stock_or_currency == 'stock':
-            chosen_stock = forms.ChoiceField(choices=(('NASDAQ','^IXIC'),('FORD','F'),('BOEING','BA'),('Mexico Price Transaction Index','^MXX')))
-            return chosen_stock
+    home = forms.ChoiceField(choices=(('US','United States'),('Mexico','Mexico'),('Both','Both')))
+    ticker = forms.ChoiceField(choices=(('^IXIC','NASDAQ'),('F','FORD'),('BA','BOEING',),('^MXX','Mexico Price Transaction Index')))
 
     def clean_start_date(self):
         start_data = self.cleaned_data['start_date']

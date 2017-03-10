@@ -78,58 +78,77 @@ def results(request):
             start_date = get_date_ints(form.data['start_date'])
             end_date = get_date_ints(form.data['end_date'])
             
-            if form.data['home'] == 'United States':
+            if form.data['home'] == 'US':
                 paper = 'ProPublica'
-            else:
+            elif form.data['home'] == 'Mexico':
                 paper = 'Jornada'
 
+
+
+            dobjs =  Date.objects.filter(pk__range=(start_date, end_date))
+
             #d = Article.objects.raw('SELECT * FROM ')
+            articles = []
+            findata_real = []
+            for dobj in dobjs:
 
-            if len(form.data['keyword'].split()) > 1:
-                articles = d.article_set.filter(title__icontains=form.data['keyword'],source = paper)
-                for word in form.data['keyword'].split()[1:]:
-                    articles.filter(title__icontains=word+" ")
-            else:
-                articles = d.article_set.filter(title__icontains=form.data['keyword']+" ",source = paper)
+                if len(form.data['keyword'].split()) > 1:
+                    split_keywords = form.data['keyword'].split()
+                    if form.data['home'] == 'Both':
+                        article = Article.objects.filter(date = dobj, title__icontains=split_keywords[0]+" ")
+                    else:
+                        article = Article.objects.filter(date = dobj, title__icontains=split_keywords[0]+" ",source__icontains = paper)
+
+                    for word in split_keywords[1:]:
+                        #print(article)
+                        article = article.filter(title__icontains=word+" ").select_related()
+                else:
+                    if form.data['home'] == 'Both':
+                        article = Article.objects.filter(date = dobj, title__icontains=form.data['keyword'][0]+" ")
+                    else:
+                        article = Article.objects.filter(date = dobj, title__icontains=form.data['keyword'][0]+" ",source__icontains = paper)
+                
+                #print(article)
+                
+                if len(article):
+
+                    articles.append(article)
+
+                    if form['stock_or_currency'] == 'stock':
+                        stock = Ticker.objects.filter(ticker=form.data['ticker'], date=dobj)
+                        findata_real.append(stock[0].close)
+                    else:
+                        exchange_rate = Currency.objects.filter(date = dobj)
+                        findata_real.append(exchange_rate[0].exchange_rate)
 
 
-            if form['stock_or_currency'] == 'stock':
-                stocks = Ticker.objects.filter(ticker=form.data['ticker'], date__date_id__range=(start_date,end_date))
-                for stock in stocks:
-                    findata.append(stock.data['close'])
-            else:
-                home_rates = Currency.objects.filter( date__date_id__range=(start_date,end_date))
-                for hr in home_rates:
-                    findata.append(hr.data['currency'])
-
-
-            #will need to filter these based on days there are articles
-            
-
-            
 
             demo_len = len(articles)
-            print(len(articles))
+            print(len(articles),'len of articles')
             dates = []
             nltk_scores = []
             nltk_scores_title = []
+            articles_print=[]
+            #multiple_day_nltk = 0
+            #multiple_day_nltk
             for article in articles:
-                dates.append(article.date)
-                nltk_scores.append(article.nltk_score)
-                nltk_scores_title.append(article.nltk_score_title)
-
+                for a in article:
+                    dates.append(a.date_id)
+                    print(a.date_id)
+                    nltk_scores.append(a.nltk_score)
+                    nltk_scores_title.append(a.nltk_score_title)
+                    articles_print.append(a)
 
             
-
-            res = articles
             #results_png(dt,scores_text,scores_title,findata)
-            results_png(dates,nltk_scores,nltk_scores_title,findata[:demo_len])
+            print(len(findata_real))
+            results_png(dates,nltk_scores,nltk_scores_title,findata_real)
 
-            if not len(res):
+            if not len(articles_print):
                 context['result'] = None
             else:
-                context['result'] = res
-                context['num_results'] = len(res)
+                context['result'] = articles_print
+                context['num_results'] = len(articles_print)
                 context['columns'] = COLUMN_NAMES
             context['form']=form
     else:

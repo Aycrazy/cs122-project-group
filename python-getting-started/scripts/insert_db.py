@@ -10,7 +10,11 @@ import manage
 import datetime
 
 def get_date_ints(article_date):
-    pattern = r'(?<=0)\d|\d{4}|[^/0]\d*'
+    if '/' in article_date:
+        pattern = r'(?<=0)\d|\d{4}|[^/0]\d*'
+    else:
+        pattern = r'(?<=0)\d|\d{4}|[^-0]\d*'
+        
     date_ints = re.findall(pattern, article_date)
     #print(date_ints)
     y,m,d = date_ints

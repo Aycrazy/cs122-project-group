@@ -23,20 +23,34 @@ while startdate < date(int("2010"), int("04"), int("10")):
     dt.append(startdate)
     startdate += timedelta(days=1)
 
-findata = [random.uniform(100, 300) for i in range(len(dt))]
+#findata = [random.uniform(100, 300) for i in range(len(dt))]
 
 def create_df(date,scores_text,scores_title,findata):
+    
+    f = {'findata': pd.Series(findata)}
 
     d = {'scores_text': pd.Series(scores_text),
          'scores_title': pd.Series(scores_title),
-         'findata': pd.Series(findata),
          'date': pd.Series(date)}
 
     df = pd.DataFrame(d)
+    print(df.shape[0], 'I was this big')
+    print(df)
+    df2 = pd.DataFrame(f)
 
     df = df.set_index(pd.to_datetime(date))
+    
 
-    return df
+    df = df.groupby(pd.TimeGrouper('D')).mean()
+    rv1 = df.dropna()
+    print(rv1.shape[0], 'Now I m smaller')
+    print(rv1)
+    #df2 = df2.groupby(pd.TimeGrouper('D')).mean()
+    df2 = df2.set_index(pd.to_datetime(rv1.index))
+    rv = pd.concat([rv1, df2], axis=1)
+    rv['date'] = rv.index
+    print(rv)
+    return rv
 
 def describe(df):
     #Descriptive Statistics

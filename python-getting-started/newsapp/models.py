@@ -30,7 +30,7 @@ class Ticker(models.Model):
 class Currency(models.Model):
     date = models.ForeignKey(Date)
     exchange_rate = models.FloatField(default=0)
-    peso = models.FloatField()
+    peso = models.TextField()
     id = models.IntegerField(primary_key=True)
 
     
