@@ -7,6 +7,7 @@ class UserInput(forms.Form):
     start_date = forms.DateField(help_text="Enter a start date after 04/01/2008")
     end_date = forms.DateField(help_text="Enter an end date before 04/01/2013")
     keyword = forms.CharField(help_text="Enter a keyword or phrase in English or Spanish")
+    spanish_word = forms.ChoiceField(help_text='Espa&ntilde;ol?', choices=[('Yes','Y'),('No','N')])
     stock_or_currency = forms.ChoiceField(choices=[('stocks','stocks'),('currency','currency')])
     home = forms.ChoiceField(choices=(('US','United States'),('Mexico','Mexico'),('Both','Both')))
     ticker = forms.ChoiceField(choices=(('^IXIC','NASDAQ'),('F','FORD'),('BA','BOEING',),('^MXX','Mexico Price Transaction Index')))

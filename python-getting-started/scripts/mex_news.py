@@ -170,7 +170,6 @@ def get_sections(main_url, tag_type, class_type):
 def get_articles_pro(complement):
     '''
     '''
-    print(complement,'pro')
     propublica = 'https://www.propublica.org/archive/'
     archive_url = propublica +complement+'/'
     articles = {}

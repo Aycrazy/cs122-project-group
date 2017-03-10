@@ -1,5 +1,5 @@
 #!/bin/bash
-from newsapp.models import Article, Date
+from newsapp.models import Article, Date, Currency, Ticker
 #from scripts import
 from django.utils import timezone
 from scripts.translate import translate_keywords
@@ -14,7 +14,7 @@ def get_date_ints(article_date):
         pattern = r'(?<=0)\d|\d{4}|[^/0]\d*'
     else:
         pattern = r'(?<=0)\d|\d{4}|[^-0]\d*'
-        
+
     date_ints = re.findall(pattern, article_date)
     #print(date_ints)
     y,m,d = date_ints
@@ -35,7 +35,7 @@ def run():
                     print('date_correct ran')
                    
                     print(row[2],row[3],row[4])
-                    article = dj.article_set.create(title=translate_keywords(row[0]),\
+                    article = dj.article_set.create(title=row[0],\
                         nltk_score=row[2], nltk_score_title = row[4], source = row[3])
                     #article = Article.objects.create(title=translate_keywords(row[0]),\
                     #    date = dj, nltk_score=row[2], nltk_score_title = row[4], source = row[3])

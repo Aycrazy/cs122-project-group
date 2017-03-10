@@ -86,6 +86,9 @@ def results(request):
                 if form.data['home'] != 'Both':
                         article = article.filter(source__icontains = paper)
 
+                if form.data['spanish_word'] == 'Y':
+                    form.data['keyword'] = translate_keywords(form.data['keyword'])
+
                 if len(form.data['keyword'].split()) > 1:
                     
                     split_keywords = form.data['keyword'].split()
@@ -96,7 +99,7 @@ def results(request):
                         print(word)
                         article = article.filter(title__icontains=word)
 
-                        print(article)
+                        #print(article)
                 else:
 
                     article = article.filter(title__icontains=form.data['keyword']+" ")
