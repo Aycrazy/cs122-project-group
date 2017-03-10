@@ -19,11 +19,12 @@
                     </tr>
                     {% for entry in result %}
                     <tr>
-                        <td style="margin-left: 3px;border-right-style:solid; border-bottom-style: solid;">{{ entry.title }}</td>
-                        <td style="margin-left: 3px; border-right-style:solid;border-bottom-style: solid;">{{ entry.pub_date }}</td>
-                        <td style="margin-left: 3px;border-right-style:solid;border-bottom-style: solid;">{{ entry.nltk_score }}</td>
-                        <td style="margin-left: 3px;border-right-style:solid;border-bottom-style: solid;">{{ entry.nltk_score_title }}</td>
-                        <td style="margin-left: 3px;border-bottom-style: solid;">{{ entry.source }}</td>
+                        <td style="margin-left: 3px;border-right-style:solid; border-bottom-style: solid;">{{ entry.0 }}</td>
+                        <td style="margin-left: 3px; border-right-style:solid;border-bottom-style: solid;">{{ entry.1 }}</td>
+                        <td style="margin-left: 3px;border-right-style:solid;border-bottom-style: solid;">{{ entry.2 }}</td>
+                        <td style="margin-left: 3px;border-right-style:solid;border-bottom-style: solid;">{{ entry.3 }}</td>
+                        <td style="margin-left: 3px;border-bottom-style: solid;border-right-style:solid;">{{ entry.4 }}</td>
+                        <td style="margin-left: 3px;border-bottom-style: solid;">{{ entry.5 }}</td>
                         {% endfor %}
                     </tr>
                 </table>

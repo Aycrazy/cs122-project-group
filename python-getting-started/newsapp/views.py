@@ -19,10 +19,11 @@ import re
 # Create your views here.
 COLUMN_NAMES = [
         'Title',
-        'Publish date',
+        'Published Date',
         'Title Sentiment Score',
         'Text Sentiment Score',
         'Source',
+        'Financial Data'
 ]
 
 def get_date_ints(article_date):
@@ -42,27 +43,16 @@ def search_news(request):
         form = UserInput()
     return render(request,'search.html',{'form': form})
 
-def results_png(dt,scores_text,scores_title,findata):
+def results_png(dates,scores_text,scores_title,findata):
 
-    df = create_df(dt,scores_text,scores_title,findata)
+    df = create_df(dates,scores_text,scores_title,findata)
 
     get_plots(df)
     
     #return response
 
 def results(request):
-    context={}
-    res=None
-    startdate = date(int("2010"), int("01"), int("02"))
-    dt = []
-    while startdate < date(int("2010"), int("04"), int("10")):
-        dt.append(startdate)
-        startdate += timedelta(days=1)
-
-    scores_text = [np.random.normal(0, 1) for i in range(len(dt))]
-    scores_title = [np.random.normal(0, 1) for i in range(len(dt))]
-    findata = [random.uniform(100, 300) for i in range(len(dt))]
-
+    context = {}
     # If this is a POST request then process the Form data
     if request.method == 'POST':
 
@@ -92,20 +82,25 @@ def results(request):
             findata_real = []
             for dobj in dobjs:
                 article = Article.objects.filter(date = dobj)
-                if len(form.data['keyword'].split()) > 1:
-                    split_keywords = form.data['keyword'].split()
-                    article = article.filter(title__icontains=split_keywords[0])
-                    if form.data['home'] != 'Both':
+
+                if form.data['home'] != 'Both':
                         article = article.filter(source__icontains = paper)
+
+                if len(form.data['keyword'].split()) > 1:
+                    
+                    split_keywords = form.data['keyword'].split()
+                    
+                    article = article.filter(title__icontains=split_keywords[0]+" ")
+                    #print(article)
                     for word in split_keywords[1:]:
-                        #print(article)
-                        article = article.filter(title__icontains=word+" ")
+                        print(word)
+                        article = article.filter(title__icontains=word)
+
+                        print(article)
                 else:
 
-                    article = article.filter(date = dobj, title__icontains=form.data['keyword']+" ")
-                
-                #print(article)
-                
+                    article = article.filter(title__icontains=form.data['keyword']+" ")
+
                 if len(article):
 
                     articles.append(article)
@@ -118,31 +113,24 @@ def results(request):
                         findata_real.append(exchange_rate[0].exchange_rate)
 
 
-
-            demo_len = len(articles)
-            print(len(articles),'len of articles')
             dates = []
             nltk_scores = []
             nltk_scores_title = []
             articles_print=[]
             #multiple_day_nltk = 0
             #multiple_day_nltk
-            for article in articles:
+            for index, article in enumerate(articles):
                 for a in article:
                     dates.append(a.date_id)
                     print(a.date_id)
                     nltk_scores.append(a.nltk_score)
                     nltk_scores_title.append(a.nltk_score_title)
-                    articles_print.append(a)
-
-            
-            #results_png(dt,scores_text,scores_title,findata)
-            print(len(findata_real))
-            results_png(dates,nltk_scores,nltk_scores_title,findata_real)
+                    articles_print.append([a.title,a.date_id,a.nltk_score,a.nltk_score_title,a.source,findata_real[index]])
 
             if not len(articles_print):
                 context['result'] = None
             else:
+                results_png(dates,nltk_scores,nltk_scores_title,findata_real)
                 context['result'] = articles_print
                 context['num_results'] = len(articles_print)
                 context['columns'] = COLUMN_NAMES
@@ -151,21 +139,3 @@ def results(request):
         form= UserInput()
 
     return render(request,'results.html',context)
-'''
-def index(request):
-    if request.method == 'POST':
-        # Create a form instance and populate it with data from the request (binding):
-        form = UserInput(request.POST, initial= data)
-        if form.is_valid():
-            HttpResponse('Thank you we are processing your request')
-    else:
-        form = UserInput()
-    #r = requests.get('http://httpbin.org/status/418')
-    #print (r.text)
-
-    return render(request,'index.html',{'form': form})
-
-def db(request):
-
-    return render(request, 'db.html')
-'''
