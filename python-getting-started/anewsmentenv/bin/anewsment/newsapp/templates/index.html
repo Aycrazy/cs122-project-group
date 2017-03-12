@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron text-center">
+  <div class="container">
+    <h1>A<b>News</b>Ment</h1>
+    <p style='border-bottom:-15px'>Lookup a keyword in Spanish or English and we will give you a simple graphic that graphs sentiment about the keyword in news articles and stock or currency indices to help you vizualize a possible relationship!"</p><span class="glyphicon glyphicon-download"></span> Source on GitHub</a>
+  </div>
+</div>
+<div class="container">
+    <form action="/newsapp/views/" method="post">
+        {% csrf_token %}
+        <table>
+            <tr >
+                <td>
+                <span>
+                <label for="keyword">Search Keyword:</label>
+                <input id="keyword" type="text" name="keyword" value="{{current_keyword}}">
+                </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <label for="date_range_start">Date Range Start:</label>
+                <input id="date_range_start" type="date" value="{{start_date}}">
+                <label for="date_range_end" >Date Range End:</label>
+                <input id="date_range_end" type="date"type="date" value="{{end_date}}">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <label for="stock_or_currency">Stock or Currency Relation?</label>
+                <select name="stock_or_currency">
+                    <option value="stock"type="text" value="{{stock}}">stock</option>
+                    <option value="currency"type="text" value="{{currency}}">currency</option>
+                </select>
+                </td>
+            <tr>
+            <tr>
+                <td>
+                <label for="stock">(If chose stock) Choose Stock:</label>
+                <select name="stock">
+                    <option value="nasdaq" type="text" value="{{nasdaq}}">NASDAQ</option>
+                    <option value="oil_futures" type="text" value="{{oil_futures}}">Oil Futures</option>
+                    <option value="ford" type="text" value="{{ford}}">Ford</option>
+                    <option value="boeing" type="text" value="{{boeing}}">Boeing</option>
+                    <option value="chrysler" type="text" value="{{chrysler}}">Chrylser</option>
+                </select>
+            <tr>
+                <td>
+                <label for="home">Home</label>
+                <select name="home">
+                    <option value="mexico" type="text" value="{{mexico}}">Mexico</option>
+                    <option value="united_states" type="text" value="{{united_states}}">United States</option>
+                </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <label for="foreign">Foreign</label>
+                <select name="foreign">
+                    <option value="mexico" type="text" value="{{mexico}}">Mexico</option>
+                    <option value="united_states" type="text" value="{{united_states}}">United States</option>
+                </select>
+                </td>
+            </tr>
+        </table>
+        <input type="submit" value="Submit" />
+    </form>
+</div>
+{% endblock %}
