@@ -1,0 +1,42 @@
+
+{%load staticfiles %}
+<html>
+    <header style="margin: 20px; font-size:24px;color:purple;">Here are your results! </header>
+    <div class="frame">
+
+        {%load static%}
+        {% if num_results %}
+        <img src="{%static 'test.png' %}" alt="Image">
+
+        <div class="frame" style="margin-top: 20px; border-top-style: solid;">
+            
+            <div>
+                <table >
+                    <tr>
+                        {% for col in columns %}
+                        <th style="margin-left: 3px;">{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for entry in result %}
+                    <tr>
+                        <td style="margin-left: 3px;border-right-style:solid; border-bottom-style: solid;">{{ entry.0 }}</td>
+                        <td style="margin-left: 3px; border-right-style:solid;border-bottom-style: solid;">{{ entry.1 }}</td>
+                        <td style="margin-left: 3px;border-right-style:solid;border-bottom-style: solid;">{{ entry.2 }}</td>
+                        <td style="margin-left: 3px;border-right-style:solid;border-bottom-style: solid;">{{ entry.3 }}</td>
+                        <td style="margin-left: 3px;border-bottom-style: solid;border-right-style:solid;">{{ entry.4 }}</td>
+                        <td style="margin-left: 3px;border-bottom-style: solid;">{{ entry.5 }}</td>
+                        {% endfor %}
+                    </tr>
+                </table>
+            </div>
+            <p >Results: {{ num_results }}</p>
+            {% else %}
+                <h2 style="color:red;font-size:24px;"> Sorry, no results for you</h2>
+            {% endif %}
+
+        </div>
+
+    </body>
+    </body>
+
+</html>
