@@ -83,7 +83,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-#DATABASES['default'] =  dj_database_url.config()
+DATABASES['default'] =  dj_database_url.config()
 DATABASES['default'] = dj_database_url.config(default='postgres://andrewyaspan:password@localhost:5432/postgres')
 
 # DATABASES = {
