@@ -321,6 +321,73 @@ def get_info(dictionary):
 #10-17 stag_type = 'div', sclass_type = 'main-sections gui', atag_type = 'a', aclass_type = 'cabeza'
 #else stag_type = 'li', sclass_type = 'fixed-menu-p', atag_type = 'h4', aclass_type = None
 
+def write_csv_pro(dictionary, filename):
+    with open(filename, 'w') as csv_file:
+        fieldnames = ['article','pub_date','source' ]
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)#delimiter='|')
+        writer.writeheader()
+        for value in dictionary.values():
+            #for i in dictionary[key]:
+            writer.writerow(value)
+
+def get_articles_c_tribune(complement):
+    '''
+    '''
+    c_tribune = 'http://articles.chicagotribune.com/'
+    archive_url = c_tribune +complement+'/'
+    articles = {}
+    pm = urllib3.PoolManager()
+    html = pm.urlopen(url= archive_url, method="GET").data
+    soup = bs4.BeautifulSoup(html, 'lxml')
+    #print(soup)
+    tag_list = soup.find_all('h3')
+
+    if tag_list:
+        for index,tag in enumerate(tag_list):
+            rv= {}
+            articles[index] = rv
+            article = c_tribune+tag.a['href']
+            #print(article)
+            config = Configuration()
+            config.browser_user_agent = get_user_agent()
+            article_object = Article(article)
+            article_object.download()
+            
+            if article_object:
+                article_object.parse()
+                if 'Death Notice:' in article_object.title:
+                        continue
+                title = article_object.title
+                #date = article_object.publish_date
+                text = article_object.text
+                rv['article'] = title
+                rv['pub_date'] = complement
+                rv['nltk_score'] = get_nltk_score(text)
+                rv['nltk_score_title'] =get_nltk_score(title)
+                rv['source'] = 'Chicago Tribune'
+
+                
+            write_csv_pro(articles, 'chicago_tribune_'+ re.sub("/", "_", complement) +'.csv')
+
+def download_tribune(start_date, end_date):
+    '''
+    Inputs:
+        start_date "YYYY/MM/DD" (string)
+        end_date "YYYY/MM/DD" (string)
+
+    Outputs:
+        csv_file (articles per day for the date range)
+    '''
+    date1 = start_date.split("/")
+    y1, m1, d1 = (int(x) for x in date1)
+    date2 = end_date.split("/")
+    y2, m2, d2 = (int(x) for x in date2)
+    date_range = create_date_range((y1, m1, d1), (y2, m2, d2))
+
+    for day in date_range:
+        get_articles_c_tribune(day)
+
+ 
 def helper_funciton(main_url, stag_type,sclass_type, atag_type, aclass_type):
     sections_list = get_sections(main_url, stag_type, sclass_type)
     if sections_list:
@@ -400,6 +467,9 @@ def write_csv_pro(dictionary, filename):
         writer.writeheader()
         for value in dictionary.values():
             #for i in dictionary[key]:
+            #print(value)
+            if not len(value):
+                continue
             writer.writerow(value)
 
 # if __name__ == "__main__":

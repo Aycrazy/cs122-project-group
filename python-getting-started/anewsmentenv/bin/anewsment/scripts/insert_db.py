@@ -24,11 +24,11 @@ def run():
 
     for file in glob.glob("*.csv"):
         with open(file, 'r') as csvfile:    
-            if 'jornada' in file or 'propublica' in file:
+            if 'jornada' in file or 'propublica' in file or 'chicago' in file:
                 reader = csv.reader(csvfile)
                 next(reader,None)
                 for row in reader:
-                    if 'propublica' in file:
+                    if 'propublica' in file or 'chicago' in file:
                         dj = Date(pk=get_date_ints(row[1]))
                     else:
                         dj = Date(pk=row[1])
