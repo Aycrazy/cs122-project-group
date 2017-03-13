@@ -72,20 +72,17 @@ def results(request):
 
             articles = []
             findata_real = []
-            for dobj in dobjs:
-                article = Article.objects.filter(date = dobj)
-                keyword = form.data['keyword']
-
-                if form.data['home'] == 'Mexico':
-                    article = article.filter(source__icontains = 'Jornada')
-                elif form.data['home'] == 'US':
-                    article = article.exclude(source= 'Jornada')
-
-
-
-                if form.data['spanish_word'] == 'Y':
+            keyword = form.data['keyword']
+            
+            if form.data['spanish_word'] == 'Y':
                     keyword = translate_keywords(keyword)
 
+                  
+            for dobj in dobjs:
+                article = Article.objects.filter(date = dobj)
+
+
+                
                 if len(keyword.split()) > 1:
                     
                     split_keywords = keyword.split()
