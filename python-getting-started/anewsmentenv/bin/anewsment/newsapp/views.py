@@ -109,7 +109,7 @@ def results(request):
                     article = article.filter(title__icontains=split_keywords[0]+" ")
                     
                     for word in split_keywords[1:]:
-                        print(word)
+                        
                         article = article.filter(title__icontains=word)
 
                         
@@ -138,7 +138,6 @@ def results(request):
             for index, article in enumerate(articles):
                 for a in article:
                     dates.append(a.date_id)
-                    print(a.date_id)
                     nltk_scores.append(a.nltk_score)
                     nltk_scores_title.append(a.nltk_score_title)
                     articles_print.append([a.title,a.date_id,a.nltk_score,a.nltk_score_title,a.source,findata_real[index]])
