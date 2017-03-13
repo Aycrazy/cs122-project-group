@@ -7,23 +7,11 @@ import django
 
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
-#from io import BytesIO
 from PIL import Image
 from time import sleep
 from random import randint
-
 import numpy as np
-#from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import django
-#from PIL import image
-
-startdate = date(int("2010"), int("01"), int("02"))
-dt = []
-while startdate < date(int("2010"), int("04"), int("10")):
-    dt.append(startdate)
-    startdate += timedelta(days=1)
-
-#findata = [random.uniform(100, 300) for i in range(len(dt))]
 
 def create_df(date,scores_text,scores_title,findata):
     
@@ -127,23 +115,6 @@ def get_plots(data, save_to = None):
 
 
     if save_to == None:
-        '''
-        sleep(randint(3,5))
-        #f.savefig('gettingstarted/static/test.png')
-        #canvas = FigureCanvas(f)
-        im = Image.new(mode='F',size=(300,200))
-        left = 10
-        top = 10
-        right = 100
-        bottom = 100
-        cropped_image = im.crop( (left, top, right, bottom) )
-        response = django.http.HttpResponse(cropped_image, content_type='image/png')
-        #canvas.print_png(response)
-        response['Content-Disposition'] = 'attachment; filename="test.png"'
-        '''
         f.savefig('newsapp/static/test.png')
-        #f.show()
-        #return response
-
     else:
         f.savefig(save_to)

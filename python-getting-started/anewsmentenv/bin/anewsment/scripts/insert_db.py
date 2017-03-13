@@ -1,6 +1,5 @@
 #!/bin/bash
 from newsapp.models import Article, Date, Currency, Ticker
-#from scripts import
 from django.utils import timezone
 from scripts.translate import translate_keywords
 import re
@@ -26,7 +25,7 @@ def run():
     '''
     A script that reads our csvs into our postgres database
     '''
-    
+
     for file in glob.glob("*.csv"):
         with open(file, 'r') as csvfile:    
             if 'jornada' in file or 'propublica' in file or 'chicago' in file:
@@ -42,11 +41,7 @@ def run():
                     print(row[2],row[3],row[4])
                     article = dj.article_set.create(title=row[0],\
                         nltk_score=row[2], nltk_score_title = row[4], source = row[3])
-                    #article = Article.objects.create(title=translate_keywords(row[0]),\
-                    #    date = dj, nltk_score=row[2], nltk_score_title = row[4], source = row[3])
-                    
-                    print('should be created')
-                    #break
+
             elif 'stock' in file:
                 reader = csv.reader(csvfile)
                 next(reader, None)
@@ -59,5 +54,5 @@ def run():
                 for row in reader:
                     currency = Currency(date=row[0],exchange_rate=row[1],peso=row[2])
                 currency.save()
-        print('test')
+
         os.remove(file)

@@ -24,7 +24,6 @@ def get_date_ints(article_date):
 
     pattern = r'(?<=0)\d|\d{4}|[^/0]\d*'
     date_ints = re.findall(pattern, article_date)
-    #print(date_ints)
     m,d,y = date_ints
     return date(int(y),int(m),int(d))
 
@@ -34,7 +33,6 @@ def search_news(request):
     '''
 
     if request.method == 'POST':
-        # Create a form instance and populate it with data from the request (binding):
         form = UserInput(request.POST)
         if form.is_valid():
             HttpResponse('Thank you we are processing your request')
