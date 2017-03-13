@@ -1,0 +1,19 @@
+To run the program:
+
+Run requirements.txt with pip3 install -r requirements.txt
+
+
+Download postgres:
+apt-get install postgresql-9.4
+
+If you have trouble with psycopg2 
+run sudo apt-get update
+pip3 install libpq-dev
+then
+pip3 install psycopg2
+
+source activate inside the anewsmentenv>bin
+python manage.py makemigrations
+python manage.py migrations
+
+python manage.py runserver --> this will start running the page in 120.0.1:8000/search.html
