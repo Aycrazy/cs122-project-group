@@ -189,37 +189,59 @@ def time_series(data, save_to = None):
 
 def get_plots(data, save_to = None):
 
+    '''
+    Plot results from Query input given
+    by the user.
+    Input: A pandas DataFrame containing
+          all relevant information resulting
+          from the Query
+    Returns:
+            A Figure with for subplots analyzing 
+            descriptive statitistics related to 
+            the Query
+            i) scatterplot (%) in indicator vs. text nltk
+            ii) scatterplot title vs. text nltk
+            iii) Histograms title vs. text nltk
+            iv) Time series behavior (%) in indicator vs. text nltk
+    '''
+
+    # Compute Percent change in findata
+    ch_findata = data.findata.pct_change()*100
+    I = pd.notnull(ch_findata)
+
     # Inputs for scatter plots
     colors = np.random.rand(len(data.date))
+    colors2 = np.random.rand(len(data.date[I]))
     area = np.pi * (15 * np.array([0.6]*len(data.date)))**2  # 0 to 15 point radii
-    plt.scatter(data.scores_title, data.scores_text, s=area, c=colors, alpha=0.5)
+    
     # Linear fit for nltk comparison scores
     x = np.array(data.scores_text)
     y = np.array(data.scores_title)
     m, b = np.polyfit(x, y, 1)
     # Fontsize
     num = 12
+
     # Correlations
-    corr1 = data.scores_text.corr(data.findata)
+    corr1 = data.scores_text[I].corr(data.findata)
     corr2 = data.scores_text.corr(data.scores_title)
     #Create subplots
     f, axarr = plt.subplots(2, 2)
 
-    axarr[0,0].scatter(data.findata, data.scores_text, s=area, c=colors, alpha=0.5, label= '{0:.3g}'.format(corr1))
+    axarr[0,0].scatter(ch_findata[I], data.scores_text[I], s=area, c=colors2, alpha=0.5, label= '{0:.3g}'.format(corr1))
     axarr[0,0].legend(loc='upper right')
     axarr[0,0].grid()
-    axarr[0,0].set_title('Scatter plot financial data vs. nltk text', fontsize = num)
-    axarr[0,0].set_xlabel('indicator units')
+    axarr[0,0].set_title('Scatterplot financial data vs. nltk text', fontsize = num)
+    axarr[0,0].set_xlabel('(%) change in indicator')
     axarr[0,0].set_ylabel('text score')
     # Comparison scatterplot
     axarr[0,1].scatter(data.scores_title, data.scores_text, s=area, c=colors, alpha=0.5, label= '{0:.3g}'.format(corr2))
     axarr[0,1].legend(loc='upper right')
     axarr[0,1].plot(x, m*x + b, '-')
     axarr[0,1].grid()
-    axarr[0,1].set_title('Scatter plot nltk title vs. text', fontsize = num)
+    axarr[0,1].set_title('Scatterplot nltk title vs. text', fontsize = num)
     #axarr[0,1].tick_params(axis='x',labelsize=5,width=2)
-    axarr[0,1].set_xlabel('title')
-    axarr[0,1].set_ylabel('text')
+    axarr[0,1].set_xlabel('title score')
+    axarr[0,1].set_ylabel('text score')
     # Histograms
     axarr[1,0].hist(data.scores_title.dropna(), alpha=0.5, label= "title")
     axarr[1,0].hist(data.scores_text.dropna(), alpha=0.5, label= "text")
@@ -227,14 +249,14 @@ def get_plots(data, save_to = None):
     axarr[1,0].grid()
     axarr[1,0].set_title('Nltk Histograms title and text', fontsize = num)
     # Time series subplot
-    axarr[1,1].plot(data.date, data.scores_text)
+    axarr[1,1].plot(data.date[I], data.scores_text[I])
     ax2 = axarr[1,1].twinx()
-    ax2.plot(data.date, data.findata, color="g")
+    ax2.plot(data.date[I], ch_findata[I], color="g")
     axarr[1,1].grid()
     axarr[1,1].set_title('Time series nltk text vs. financial data', fontsize = num)
     axarr[1,1].tick_params(axis='x', labelsize=5, width =2)
     axarr[1,1].set_ylabel('text score')
-    ax2.set_ylabel('indicator units')
+    ax2.set_ylabel('(%) change in indicator')
     f.tight_layout()
 
 
