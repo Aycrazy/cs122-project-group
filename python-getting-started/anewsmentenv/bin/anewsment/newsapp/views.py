@@ -64,28 +64,24 @@ def results(request):
 
             args = True
 
-            #findata=[]
             start_date = get_date_ints(form.data['start_date'])
             end_date = get_date_ints(form.data['end_date'])
             
-            if form.data['home'] == 'US':
-                paper = 'ProPublica'
-            elif form.data['home'] == 'Mexico':
-                paper = 'Jornada'
-
-
 
             dobjs =  Date.objects.filter(pk__range=(start_date, end_date))
 
-            #d = Article.objects.raw('SELECT * FROM ')
             articles = []
             findata_real = []
             for dobj in dobjs:
                 article = Article.objects.filter(date = dobj)
                 keyword = form.data['keyword']
 
-                if form.data['home'] != 'Both':
-                        article = article.filter(source__icontains = paper)
+                if form.data['home'] == 'Mexico':
+                    article = article.filter(source__icontains = 'Jornada')
+                elif form.data['home'] == 'US':
+                    article = article.exclude(source= 'Jornada')
+
+
 
                 if form.data['spanish_word'] == 'Y':
                     keyword = translate_keywords(keyword)
@@ -121,8 +117,7 @@ def results(request):
             nltk_scores = []
             nltk_scores_title = []
             articles_print=[]
-            #multiple_day_nltk = 0
-            #multiple_day_nltk
+
             for index, article in enumerate(articles):
                 for a in article:
                     dates.append(a.date_id)

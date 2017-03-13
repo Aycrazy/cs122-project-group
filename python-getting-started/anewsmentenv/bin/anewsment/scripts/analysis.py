@@ -254,7 +254,7 @@ def get_plots(data, save_to = None):
         #canvas.print_png(response)
         response['Content-Disposition'] = 'attachment; filename="test.png"'
         '''
-        f.savefig('gettingstarted/static/test.png')
+        f.savefig('newsapp/static/test.png')
         #f.show()
         #return response
 
