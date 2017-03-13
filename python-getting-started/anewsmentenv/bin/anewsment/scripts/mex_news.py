@@ -1,10 +1,13 @@
 
+# Import components for bs4 
 import urllib3
 import bs4
 import urllib.parse
 import requests
 import re
 from io import StringIO
+# Import Newspaper & random for 
+# article download
 import newspaper
 from newspaper import Article
 import random
@@ -14,6 +17,7 @@ import pandas as pd
 from newspaper.configuration import Configuration
 from datetime import date, timedelta as td
 import csv
+# Import functions for nltk scoress
 from get_compound_scores import *
 import mtranslate
 import sys
@@ -54,8 +58,10 @@ def create_date_range(date1,date2):
 
 def get_user_agent():
 
-
     '''
+    Get a random user agent from
+    useragents.txt 
+    Returns: Random user agent
     '''
     user_agents = []
 
@@ -67,15 +73,6 @@ def get_user_agent():
 
     return stacked.sample(1).reset_index()[0][0].strip(" ")
 
-
-
-
-#jornada 10-16 tag_type = 'div'
-#jornada 10-16 class_type = 'main-sections gui'
-#jornada tag_type = 'li'
-#jornada class_type = 'fixed-menu-p'
-#latimes tag_type = 'li'
-#latimes class_type = 'trb_nh_ln_li'
 
 
 def get_sections(main_url, tag_type, class_type):
@@ -169,6 +166,16 @@ def get_sections(main_url, tag_type, class_type):
 
 def get_articles_pro(complement):
     '''
+    Given a string (complement) of the form 2011/01/01,
+    get articles for a given day from ProPublica
+    Inputs:
+            a string called complement containing the date
+            for a given day
+            propublica tag_type = 'div'
+            propublica class_type = 'excerpt-thumb'
+    Returns:
+            Dictionary with articles for that day
+            Writes csv files with nltk scores
     '''
     propublica = 'https://www.propublica.org/archive/'
     archive_url = propublica +complement+'/'
@@ -284,19 +291,25 @@ def get_articles(sections_list, tag_type, class_type=None, original_url=None):
 
 def get_info(dictionary):
     '''
+    Get information for all the articles
+    for the selected sections in La Jornada
+    Inputs:
+            Dictionary with selected sections
+            as keys and list of urls representing
+            articles in every section
+    Returns:
+            A dictionary with nltk scores for title
+            and text for every article in every section
     '''
     rv = {}
     count = 0
     for key, item in dictionary.items():
-        #count = 0
         for i in item:
-            #sleep(randint(1,5))
             config = Configuration()
             config.browser_user_agent = get_user_agent()
             article = Article(i, language = 'es')
             article.download()
             if article.is_downloaded == True:
-                #rv['section'] = key
                 irv = {}
                 rv[count] = irv
                 article.parse()
@@ -332,6 +345,15 @@ def write_csv_pro(dictionary, filename):
 
 def get_articles_c_tribune(complement):
     '''
+    Given a string (complement) of the form 2011/01/01,
+    get articles from the Chicago Tribune Archives.
+
+    Inputs: a string called complement containing the date
+            for a given day
+    Returns: 
+            info dictionary for that day
+            writes csv file with nltk scores for complement
+
     '''
     c_tribune = 'http://articles.chicagotribune.com/'
     archive_url = c_tribune +complement+'/'
@@ -388,7 +410,18 @@ def download_tribune(start_date, end_date):
         get_articles_c_tribune(day)
 
  
-def helper_funciton(main_url, stag_type,sclass_type, atag_type, aclass_type):
+def helper_function(main_url, stag_type,sclass_type, atag_type, aclass_type):
+    '''
+    Given a main_url, the function computes the info dictionary for 
+    a specific day
+    Inputs: main_url
+            stag_type : tag type for the main_url
+            sclass_type : class type for the main_url
+            atag_type : tag type for article url in section
+            aclass_type : class type for article url in section
+    Returns:
+            info dictionary given a main_url
+    '''
     sections_list = get_sections(main_url, stag_type, sclass_type)
     if sections_list:
         articles = get_articles(sections_list, atag_type, aclass_type, main_url)
@@ -396,6 +429,16 @@ def helper_funciton(main_url, stag_type,sclass_type, atag_type, aclass_type):
 
 def master_function(complement):
     '''
+    Given a string (complement) of the form 2011/01/01
+    the function calls helper_function to produce the 
+    info dictionary for that complement and writes the csv
+    files containing the nltk scores
+
+    Inputs: a string called complement containing the date
+            for a given day
+    Returns: 
+            info dictionary for that day
+            writes csv file with nltk scores for complement
     '''
     #if 'jornada' in main_url:
     #    pattern = r'(.*.mx)(.*)'
@@ -404,30 +447,23 @@ def master_function(complement):
 
     jornada = 'http://www.jornada.unam.mx/'
     main_url = jornada+complement+'/'
-    #print(main_url)
 
-    print(complement,'jornada')
     if any(x for x in years07_09 if x in complement): # and 'jornada' in main:
-        #sections_list = get_sections(main_url, 'a', 'visualIconPadding')
-        #articles = get_articles(sections_list, 'div', 'article_list', main_url)
-        info_dictionary = helper_funciton(main_url,'a','visualIconPadding', 'div','article_list')
+        info_dictionary = helper_function(main_url,'a','visualIconPadding', 'div','article_list')
         if info_dictionary:
             write_csv(info_dictionary, 'jornada_'+ re.sub("/", "_", complement) +'.csv')
             return info_dictionary
 
     elif any(x for x in years10_17 if x in complement): # and 'jornada' in main:
-        #sections_list = get_sections(main_url, 'div', 'main-sections gui')
-        #articles = get_articles(sections_list, 'a', 'cabeza', main_url)
-        #info_dictionary = get_info(articles)
-        info_dictionary = helper_funciton(main_url,'div','main-sections gui', 'a','cabeza')
+
+        info_dictionary = helper_function(main_url,'div','main-sections gui', 'a','cabeza')
         if info_dictionary:
             write_csv(info_dictionary, 'jornada_'+ re.sub("/", "_", complement) +'.csv')
             return info_dictionary
 
     else:
-        #sections_list = get_sections(main_url, 'li', 'fixed-menu-p')
-        #articles = get_articles(sections_list, 'h4')
-        info_dictionary = helper_funciton(main_url,'li','fixed-menu-p', 'h4', None)
+
+        info_dictionary = helper_function(main_url,'li','fixed-menu-p', 'h4', None)
         if info_dictionary:
             write_csv(info_dictionary, 'jornada_'+ re.sub("/", "_", complement) +'.csv')
             return info_dictionary
@@ -452,22 +488,38 @@ def downloader(start_date, end_date):
         get_articles_pro(day)
 
 def write_csv(dictionary, filename):
+    '''
+    Writes csv file for a given info dictionary
+    Inputs :
+            Info dictionary for a given day
+            A name for the csv file
+    Returns:
+            CSV file with the results for a given
+            day
+    '''
     with open(filename, 'w') as csv_file:
         fieldnames = ['article','pub_date','nltk_score','source', 'nltk_score_title']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)#delimiter='|')
         writer.writeheader()
         for key, value in dictionary.items():
-            #for i in dictionary[key]:
             writer.writerow(value)
 
 def write_csv_pro(dictionary, filename):
+    '''
+    Writes csv file for a given info dictionary
+    for ProPublica
+    Inputs :
+            Info dictionary for a given day
+            A name for the csv file
+    Returns:
+            CSV file with the results for a given
+            day
+    '''
     with open(filename, 'w') as csv_file:
         fieldnames = ['article','pub_date','nltk_score','source', 'nltk_score_title' ]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)#delimiter='|')
         writer.writeheader()
         for value in dictionary.values():
-            #for i in dictionary[key]:
-            #print(value)
             if not len(value):
                 continue
             writer.writerow(value)
