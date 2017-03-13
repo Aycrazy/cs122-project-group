@@ -1,8 +1,0 @@
-dj-database-url==0.4.1
-django_extensions
-requests
-Django==1.9.7
-psycopg2
-gunicorn==19.6.0
-whitenoise==2.0.6
-
