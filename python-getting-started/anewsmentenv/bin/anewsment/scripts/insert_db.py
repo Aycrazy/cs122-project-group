@@ -10,18 +10,23 @@ import manage
 import datetime
 
 def get_date_ints(article_date):
+    '''
+    Takes a date string and return a datime object with the year,month,day
+    '''
     if '/' in article_date:
         pattern = r'(?<=0)\d|\d{4}|[^/0]\d*'
     else:
         pattern = r'(?<=0)\d|\d{4}|[^-0]\d*'
 
     date_ints = re.findall(pattern, article_date)
-    #print(date_ints)
     y,m,d = date_ints
     return datetime.date(int(y),int(m),int(d))
   
 def run():
-
+    '''
+    A script that reads our csvs into our postgres database
+    '''
+    
     for file in glob.glob("*.csv"):
         with open(file, 'r') as csvfile:    
             if 'jornada' in file or 'propublica' in file or 'chicago' in file:

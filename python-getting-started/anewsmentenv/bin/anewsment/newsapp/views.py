@@ -3,7 +3,7 @@ from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 import requests
 from scripts.financial_scraper import get_historical_stock, get_exchange_rate, get_historical_currency
-from scripts.analysis import create_df, get_plots, scatter_plot_comparison
+from scripts.analysis import create_df, get_plots
 from .models import Article, Date, Ticker, Currency
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
@@ -16,17 +16,12 @@ import numpy as np
 import random
 import re
 
-# Create your views here.
-COLUMN_NAMES = [
-        'Title',
-        'Published Date',
-        'Title Sentiment Score',
-        'Text Sentiment Score',
-        'Source',
-        'Financial Data'
-]
 
 def get_date_ints(article_date):
+    '''
+    Takes a date string and return a datime object with the year,month,day
+    '''
+
     pattern = r'(?<=0)\d|\d{4}|[^/0]\d*'
     date_ints = re.findall(pattern, article_date)
     #print(date_ints)
@@ -34,6 +29,10 @@ def get_date_ints(article_date):
     return date(int(y),int(m),int(d))
 
 def search_news(request):
+    '''
+    search news form page
+    '''
+
     if request.method == 'POST':
         # Create a form instance and populate it with data from the request (binding):
         form = UserInput(request.POST)
@@ -48,10 +47,26 @@ def results_png(dates,scores_text,scores_title,findata):
     df = create_df(dates,scores_text,scores_title,findata)
 
     get_plots(df)
-    
-    #return response
 
 def results(request):
+    '''
+    This function will take user data and query our database for the appropriate information
+    to create our subplots
+
+    INPUTS:
+        form data
+    Outputs:
+        results page with  get_plots
+    '''
+
+    column_names = [
+        'Title',
+        'Published Date',
+        'Title Sentiment Score',
+        'Text Sentiment Score',
+        'Source',
+        'Financial Data']
+
     context = {}
     # If this is a POST request then process the Form data
     if request.method == 'POST':
@@ -72,12 +87,18 @@ def results(request):
 
             articles = []
             findata_real = []
-            keyword = form.data['keyword']
-            
-            if form.data['spanish_word'] == 'Y':
-                    keyword = translate_keywords(keyword)
 
-                  
+            keyword = form.data['keyword']
+
+            if form.data['spanish_word'] == 'Y':
+                keyword = translate_keywords(keyword)
+
+            if keyword == None:
+                context['result'] = 'g_fail'
+                return render(request,'results.html',context)
+
+            
+
             for dobj in dobjs:
                 article = Article.objects.filter(date = dobj)
 
@@ -88,12 +109,12 @@ def results(request):
                     split_keywords = keyword.split()
                     
                     article = article.filter(title__icontains=split_keywords[0]+" ")
-                    #print(article)
+                    
                     for word in split_keywords[1:]:
                         print(word)
                         article = article.filter(title__icontains=word)
 
-                        #print(article)
+                        
                 else:
 
                     article = article.filter(title__icontains=keyword+" ")
@@ -102,9 +123,10 @@ def results(request):
 
                     articles.append(article)
 
-                    if form['stock_or_currency'] == 'stock':
+                    if form.data['stock_or_currency'] == 'stocks':
                         stock = Ticker.objects.filter(ticker=form.data['ticker'], date=dobj)
                         findata_real.append(stock[0].close)
+                        column_names[-1] = form.data['ticker']
                     else:
                         exchange_rate = Currency.objects.filter(date = dobj)
                         findata_real.append(exchange_rate[0].exchange_rate)
@@ -129,7 +151,7 @@ def results(request):
                 results_png(dates,nltk_scores,nltk_scores_title,findata_real)
                 context['result'] = articles_print
                 context['num_results'] = len(articles_print)
-                context['columns'] = COLUMN_NAMES
+                context['columns'] = column_names
             context['form']=form
     else:
         form= UserInput()
