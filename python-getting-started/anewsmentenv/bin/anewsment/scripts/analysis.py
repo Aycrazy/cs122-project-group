@@ -34,8 +34,7 @@ def create_df(date,scores_text,scores_title,findata):
          'date': pd.Series(date)}
 
     df = pd.DataFrame(d)
-    print(df.shape[0], 'I was this big')
-    print(df)
+
     df2 = pd.DataFrame(f)
 
     df = df.set_index(pd.to_datetime(date))
@@ -43,148 +42,14 @@ def create_df(date,scores_text,scores_title,findata):
 
     df = df.groupby(pd.TimeGrouper('D')).mean()
     rv1 = df.dropna()
-    print(rv1.shape[0], 'Now I m smaller')
-    print(rv1)
-    #df2 = df2.groupby(pd.TimeGrouper('D')).mean()
+
     df2 = df2.set_index(pd.to_datetime(rv1.index))
     rv = pd.concat([rv1, df2], axis=1)
     rv['date'] = rv.index
-    print(rv)
+
     return rv
 
-def describe(df):
-    #Descriptive Statistics
 
-    df.describe()
-     
-    # Correlation for the time period
-
-    df.scores_text.corr(df.findata)
-
-    df.scores_title.corr(df.findata)
-
-    
-# Scatter
-
-def scatter_plot(data, save_to = None):
-    '''
-    Computes the scatter plot for sentiment scores_text
-    and financial data for a specified time period
-    Inputs:
-            Pandas DataFrame
-            Filename, default value None
-    Returns:
-            It can only show the plot or save a 
-            file with the plot
-    '''
-    colors = np.random.rand(len(data.date))
-    area = np.pi * (15 * np.array([0.6]
-    *len(data.date)))**2  # 0 to 15 point radii
-    f = plt.figure()
-    plt.scatter(data.findata, data.scores_text, s=area, c=colors, alpha=0.5)
-    plt.grid(True)
-
-    if save_to == None:
-
-        plt.show()
-
-    else:
-        f.savefig(save_to)
-
-
-# Text vs. title nltk scores 
-
-def scatter_plot_comparison(data, save_to = None):
-    '''
-    Computes the scatter plot for sentiment scores_text
-    and financial data for a specified time period
-    Inputs:
-            Pandas DataFrame
-            Filename, default value None
-    Returns:
-            It can only show the plot or save a 
-            file with the plot
-    '''
-    colors = np.random.rand(len(data.date))
-    area = np.pi * (15 * np.array([0.6]*len(data.date)))**2  # 0 to 15 point radii
-    plt.scatter(data.scores_title, data.scores_text, s=area, c=colors, alpha=0.5)
-
-    x = np.array(data.scores_text)
-    y = np.array(data.scores_title)
-
-    m, b = np.polyfit(x, y, 1)
-    plt.plot(x, m*x + b, '-')
-    plt.grid(True)
-
-    if save_to == None:
-
-        plt.show()
-
-    else:
-        plt.savefig(save_to)
-
-
-
-
-# Histograms
-
-def histo_plot(data, save_to = None):
-    '''
-    Computes the histograms for sentiment scores_text
-    and financial data for a specified time period
-    Inputs:
-            Pandas DataFrame
-            Filename, default value None
-    Returns:
-            It can only show the plot or save a 
-            file with the plot
-    '''
-    data.hist(layout=(1,3)) 
-
-    if save_to == None:
-
-        plt.show()
-
-    else:
-        plt.savefig(save_to)
-
-
-
-# Time Series
-
-def time_series(data, save_to = None):
-    '''
-    Plots sentiment scores_text and financial data for
-    a specified time period
-    
-    Inputs:
-            Pandas DataFrame
-            Filename, default value None
-    Returns:
-            It can only show the plot or save a 
-            file with the plot
-    '''
-
-    f, ax = plt.subplots()
-
-    with pd.plot_params.use('x_compat', True):
-
-        data.scores_text.plot(color = 'b')
-
-        data.findata.plot(secondary_y = True, style='g')
-
-        labels = ax.get_xticklabels()
-
-        plt.setp(labels, rotation=30, fontsize=10)
-   
-        plt.grid()
-
-    if save_to == None:
-
-        plt.show()
-
-    else:
-        f.savefig(save_to)
 
 
 def get_plots(data, save_to = None):
