@@ -29,7 +29,7 @@ conda==4.3.8
 conda-build==1.21.3
 configobj==5.0.6
 contextlib2==0.5.3
-cryptography==1.4
+cryptography==3.2
 cssselect==1.0.1
 cycler==0.10.0
 Cython==0.24
