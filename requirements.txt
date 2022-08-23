@@ -89,7 +89,7 @@ multipledispatch==0.4.8
 nb-anacondacloud==1.1.0
 nb-conda==1.1.0
 nb-conda-kernels==1.0.3
-nbconvert==5.1.1
+nbconvert==6.5.1
 nbformat==4.2.0
 nbpresent==3.0.2
 networkx==1.11
